@@ -8,7 +8,7 @@ use axum::{
 };
 use postgrest::Postgrest;
 
-use crate::model::{claim::Claims, response::GeneralResponse};
+use crate::model::{claim::Claims, database::UserRole, response::GeneralResponse};
 
 pub async fn authenticated_layer(
     State(db): State<Arc<Postgrest>>,
@@ -39,4 +39,12 @@ pub async fn authenticated_layer(
     }
 
     next.run(req).await
+}
+
+pub async fn admin_layer(claims: Claims, req: Request, next: Next) -> Response {
+    if claims.role == UserRole::ADMIN {
+        next.run(req).await
+    } else {
+        GeneralResponse::new_general(StatusCode::UNAUTHORIZED, None).into_response()
+    }
 }

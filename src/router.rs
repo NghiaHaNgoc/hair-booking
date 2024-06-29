@@ -28,8 +28,10 @@ fn authorization_router(db: Arc<Postgrest>) -> Router {
     let authenticated_layer =
         middleware::from_fn_with_state(db.clone(), layer::authenticated_layer);
     let general_router = general::general_router(db.clone());
+    let admin_router = admin::admin_router(db.clone());
 
     Router::new()
         .merge(general_router)
+        .merge(admin_router)
         .layer(authenticated_layer)
 }
