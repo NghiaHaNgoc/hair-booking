@@ -1,6 +1,6 @@
 use crate::model::{
     claim::Claims,
-    database::{Gender, UserRole},
+    database::{UserGender, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -16,7 +16,7 @@ pub struct UserProfileOutput {
     pub email: Option<String>,
     pub address: Option<String>,
     pub date_of_birth: Option<String>,
-    pub gender: Option<Gender>,
+    pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<String>,

@@ -11,5 +11,6 @@ pub fn public_router(db: Arc<Postgrest>) -> Router {
     Router::new()
         .merge(SwaggerUi::new("/swagger").url("/apidoc/openapi.json", api_doc))
         .route("/account/sign-in", post(account::sign_in))
+        .route("/account/sign-up", post(account::sign_up))
         .with_state(db)
 }
