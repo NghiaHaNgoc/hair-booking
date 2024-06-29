@@ -58,7 +58,7 @@ impl IntoResponse for GeneralResponse {
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/json"),
         );
-        (self.status, header, self.body).into_response()
+        (StatusCode::OK, header, self.body).into_response()
     }
 }
 
