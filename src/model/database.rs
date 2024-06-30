@@ -44,10 +44,12 @@ pub enum UserGender {
 }
 
 #[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
+#[serde(rename_all(serialize = "SCREAMING_SNAKE_CASE", deserialize = "SCREAMING_SNAKE_CASE"))]
+#[schema(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserRole {
-    ADMIN,
-    SALON,
-    CUSTOMER,
+    Admin,
+    SalonUser,
+    Customer,
 }
 
 #[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
@@ -64,7 +66,12 @@ impl fmt::Display for UserGender {
 
 impl fmt::Display for UserRole {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        let role = match self {
+            UserRole::Admin => "ADMIN",
+            UserRole::SalonUser => "SALON_USER",
+            UserRole::Customer => "CUSTOMER"
+        };
+        write!(f, "{}", role)
     }
 }
 
