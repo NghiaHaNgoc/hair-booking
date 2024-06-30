@@ -3,3 +3,4 @@ pub mod claim;
 pub mod database;
 pub mod error;
 pub mod response;
+pub mod db_error;

@@ -10,6 +10,8 @@ pub mod admin;
 #[openapi(
     paths(
         admin::create_salon_user::create_salon_user,
+        admin::delete_user::delete_user,
+        admin::list_user::list_user
     ),
     components(
         schemas(
