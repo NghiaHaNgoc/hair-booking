@@ -39,7 +39,7 @@ pub async fn sign_up(
     signup_input.password = password_hash;
 
     // Add role
-    signup_input.role = Some(UserRole::CUSTOMER);
+    signup_input.role = Some(UserRole::Customer);
 
     let signup_input_json = serde_json::to_string(&signup_input)?;
 

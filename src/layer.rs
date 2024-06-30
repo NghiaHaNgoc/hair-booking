@@ -42,7 +42,7 @@ pub async fn authenticated_layer(
 }
 
 pub async fn admin_layer(claims: Claims, req: Request, next: Next) -> Response {
-    if claims.role == UserRole::ADMIN {
+    if claims.role == UserRole::Admin {
         next.run(req).await
     } else {
         GeneralResponse::new_general(StatusCode::UNAUTHORIZED, None).into_response()

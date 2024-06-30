@@ -55,7 +55,7 @@ pub async fn create_salon_user(
     create_user_input.password = password_hash;
 
     // Add role
-    create_user_input.role = Some(UserRole::SALON);
+    create_user_input.role = Some(UserRole::SalonUser);
 
     let signup_input_json = serde_json::to_string(&create_user_input)?;
 
