@@ -7,7 +7,10 @@ use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
 use crate::model::{
-    claim::Claims, database::{MediaType, Salon}, error::AppError, response::GeneralResponse
+    claim::Claims,
+    database::{MediaType, Salon},
+    error::AppError,
+    response::GeneralResponse,
 };
 
 #[skip_serializing_none]
@@ -56,7 +59,6 @@ pub async fn create_salon(
     let salon_medias = create_salon_input.medias;
     create_salon_input.medias = None;
 
-
     let signup_input_json = serde_json::to_string(&create_salon_input)?;
 
     let query_salon = db
@@ -69,14 +71,16 @@ pub async fn create_salon(
     if query_salon.status().is_success() {
         let salon: Salon = query_salon.json().await?;
         if let Some(mut salon_medias) = salon_medias {
-            for salon_media in salon_medias.iter_mut() {
-                salon_media.salon_id = salon.id;
+            if !salon_medias.is_empty() {
+                for salon_media in salon_medias.iter_mut() {
+                    salon_media.salon_id = salon.id;
+                }
+                let salon_media_json = serde_json::to_string(&salon_medias)?;
+                db.from("salon_medias")
+                    .insert(salon_media_json)
+                    .execute()
+                    .await?;
             }
-            let salon_media_json = serde_json::to_string(&salon_medias)?;
-            db.from("salon_medias")
-                .insert(salon_media_json)
-                .execute()
-                .await?;
         }
 
         GeneralResponse::ok_with_data(salon)
