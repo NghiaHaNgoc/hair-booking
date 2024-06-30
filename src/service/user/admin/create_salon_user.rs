@@ -1,19 +1,17 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::{Path, State},
+    extract::State,
     http::StatusCode,
     Json,
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
 use crate::model::{
-    claim::Claims,
-    database::{GeneralUserOutput, User, UserGender, UserRole},
+    database::{GeneralUserOutput, UserGender, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -26,30 +24,24 @@ pub struct CreateSalonUserInput {
     username: String,
     password: String,
     email: Option<String>,
-    address: Option<String>,
-    date_of_birth: Option<String>,
     gender: Option<UserGender>,
     #[serde(skip_deserializing)]
     role: Option<UserRole>,
-    #[serde(skip_deserializing)]
-    salon_id: Option<u64>,
 }
 
 #[utoipa::path(
     post,
     tag = "User",
-    path = "/admin/user/salon/{salon_id}",
+    path = "/admin/user/salon-user",
     security(("Authorization" = [])),
     responses(
-        (status = 200, description = "Create user salon by admin")
+        (status = 200, description = "Create salon user by admin")
     )
 )]
 pub async fn create_salon_user(
     State(db): State<Arc<Postgrest>>,
-    Path(salon_id): Path<u64>,
     Json(mut create_user_input): Json<CreateSalonUserInput>,
 ) -> Result<GeneralResponse, AppError> {
-    create_user_input.salon_id = Some(salon_id);
     //Hash password
     let password_hash = bcrypt::hash(create_user_input.password, 4)?;
     create_user_input.password = password_hash;
@@ -57,11 +49,11 @@ pub async fn create_salon_user(
     // Add role
     create_user_input.role = Some(UserRole::SalonUser);
 
-    let signup_input_json = serde_json::to_string(&create_user_input)?;
+    let user_input_json = serde_json::to_string(&create_user_input)?;
 
     let query = db
         .from("users")
-        .insert(signup_input_json)
+        .insert(user_input_json)
         .single()
         .execute()
         .await

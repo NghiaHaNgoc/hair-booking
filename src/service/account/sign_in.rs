@@ -14,9 +14,7 @@ pub struct LoginInput {
     password: String,
 }
 
-const QUERY_FIELD: [&str; 7] = [
-    "id", "username", "email", "password", "role", "avatar", "salon_id",
-];
+const QUERY_FIELD: [&str; 6] = ["id", "username", "email", "password", "role", "avatar"];
 
 #[utoipa::path(post, tag = "Account", path = "/account/sign-in")]
 
@@ -44,7 +42,6 @@ pub async fn sign_in(
                 "email": user.email,
                 "role": user.role,
                 "avatar": user.avatar,
-                "salonId": user.salon_id,
                 "token": token
             });
             GeneralResponse::ok_with_data(result)
