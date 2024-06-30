@@ -9,26 +9,34 @@ pub struct User {
     pub username: Option<String>,
     pub password: Option<String>,
     pub email: Option<String>,
-    pub address: Option<String>,
-    pub date_of_birth: Option<String>,
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<String>,
-    pub salon_id: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Salon {
     pub id: Option<u64>,
     pub logo: Option<String>,
+    pub cover_photo: Option<String>,
     pub name: Option<String>,
     pub address: Option<String>,
     pub phone: Option<String>,
     pub email: Option<String>,
     pub description: Option<String>,
-    pub status: Option<String>,
+    pub status: Option<GeneralStatus>,
     pub created_at: Option<String>,
+    pub user_id: Option<u64>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct SalonMedia {
+    pub id: Option<u64>,
+    pub salon_id: Option<u64>,
+    pub url: Option<String>,
+    pub media_type: Option<MediaType>
+
 }
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
@@ -58,6 +66,13 @@ pub enum GeneralStatus {
     INACTIVATE,
 }
 
+#[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
+pub enum MediaType {
+    IMAGE,
+    VIDEO,
+}
+
+
 impl fmt::Display for UserGender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -81,16 +96,22 @@ impl fmt::Display for GeneralStatus {
     }
 }
 
+impl fmt::Display for MediaType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
+#[schema(rename_all = "camelCase")]
 pub struct GeneralUserOutput {
     pub id: Option<u64>,
     pub username: Option<String>,
     pub email: Option<String>,
-    pub address: Option<String>,
-    pub date_of_birth: Option<String>,
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<String>,
-    pub salon_id: Option<u64>,
 }

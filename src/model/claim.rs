@@ -21,7 +21,6 @@ pub struct Claims {
     pub id: u64,
     pub username: String,
     pub role: UserRole,
-    pub salon_id: Option<u64>,
     pub exp: u64,
 }
 
@@ -83,8 +82,6 @@ impl Claims {
             None => return Err(AppError::new("role not found in db!".to_string())),
         };
 
-        let salon_id = user.salon_id;
-
         // Create time expired
         let now = SystemTime::now();
         let exp_after = Duration::from_secs(HOUR_TO_SECOND * 24 * 30);
@@ -97,7 +94,6 @@ impl Claims {
         let claims = Claims {
             id,
             username,
-            salon_id,
             role,
             exp,
         };

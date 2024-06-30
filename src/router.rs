@@ -10,7 +10,7 @@ mod admin;
 mod customer;
 mod general;
 mod public;
-mod salon;
+mod salon_user;
 
 const MB_TO_BYTE: usize = 1024 * 1024;
 
@@ -29,9 +29,11 @@ fn authorization_router(db: Arc<Postgrest>) -> Router {
         middleware::from_fn_with_state(db.clone(), layer::authenticated_layer);
     let general_router = general::general_router(db.clone());
     let admin_router = admin::admin_router(db.clone());
+    let salon_user_router = salon_user::salon_user_router(db.clone());
 
     Router::new()
         .merge(general_router)
         .nest("/admin", admin_router)
+        .nest("/salon-user", salon_user_router)
         .layer(authenticated_layer)
 }

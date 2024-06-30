@@ -23,8 +23,6 @@ pub struct SignupInput {
     username: String,
     password: String,
     email: Option<String>,
-    address: Option<String>,
-    date_of_birth: Option<String>,
     gender: Option<UserGender>,
     #[serde(skip_deserializing)]
     role: Option<UserRole>,

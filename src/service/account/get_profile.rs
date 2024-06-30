@@ -1,38 +1,21 @@
 use crate::model::{
     claim::Claims,
-    database::{UserGender, UserRole},
+    database::GeneralUserOutput,
     error::AppError,
     response::GeneralResponse,
 };
 use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-pub struct UserProfileOutput {
-    pub username: Option<String>,
-    pub email: Option<String>,
-    pub address: Option<String>,
-    pub date_of_birth: Option<String>,
-    pub gender: Option<UserGender>,
-    pub role: Option<UserRole>,
-    pub avatar: Option<String>,
-    pub created_at: Option<String>,
-    pub salon_id: Option<u64>,
-}
-
-const QUERY_FIELD: [&str; 9] = [
+const QUERY_FIELD: [&str; 7] = [
+    "id",
     "username",
     "email",
-    "address",
-    "date_of_birth",
     "gender",
     "role",
     "avatar",
     "created_at",
-    "salon_id",
 ];
 
 #[utoipa::path(
@@ -54,7 +37,7 @@ pub async fn get_profile(
         .execute()
         .await?;
     if query.status().is_success() {
-        let profile: UserProfileOutput = query.json().await?;
+        let profile: GeneralUserOutput = query.json().await?;
         GeneralResponse::ok_with_data(profile)
     } else {
         GeneralResponse::new_general(StatusCode::INTERNAL_SERVER_ERROR, None)
