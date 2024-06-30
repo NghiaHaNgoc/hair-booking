@@ -10,6 +10,7 @@ use utoipa::ToSchema;
 use crate::model::{
     claim::Claims,
     database::{User, UserGender, UserRole},
+    db_error::SupabaseError,
     error::AppError,
     response::GeneralResponse,
 };
@@ -63,7 +64,12 @@ pub async fn sign_up(
         });
         GeneralResponse::ok_with_data(data)
     } else {
-        let message = query.text().await?;
+        let db_error: SupabaseError = query.json().await?;
+        let message = match db_error.code.as_str() {
+            "22007" => "Invalid date format.".to_string(),
+            "23505" => "username already existed.".to_string(),
+            _ => serde_json::to_string(&db_error)?,
+        };
         GeneralResponse::new_general(StatusCode::BAD_REQUEST, Some(message))
     }
 }
