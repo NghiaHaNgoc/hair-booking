@@ -32,6 +32,6 @@ fn authorization_router(db: Arc<Postgrest>) -> Router {
 
     Router::new()
         .merge(general_router)
-        .merge(admin_router)
+        .nest("/admin", admin_router)
         .layer(authenticated_layer)
 }

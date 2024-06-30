@@ -41,9 +41,9 @@ impl GeneralResponse {
         Ok(res)
     }
 
-    pub fn ok_with_data<T: Serialize>(result: T) -> Result<GeneralResponse, AppError> {
+    pub fn ok_with_data<T: Serialize>(data: T) -> Result<GeneralResponse, AppError> {
         let status = StatusCode::OK;
-        let general_body = GeneralBody::new(status, get_general_message(&status), Some(result));
+        let general_body = GeneralBody::new(status, get_general_message(&status), Some(data));
         let body = serde_json::to_string(&general_body)?;
 
         let res = GeneralResponse { status, body };
