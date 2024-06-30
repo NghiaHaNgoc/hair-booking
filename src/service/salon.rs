@@ -6,7 +6,6 @@ use admin::create_salon::CreateSalonInput;
 pub mod admin;
 pub mod public;
 
-
 #[derive(OpenApi)]
 #[openapi(
     paths(

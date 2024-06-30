@@ -1,10 +1,16 @@
 use std::sync::Arc;
 
-use axum::{routing::{get, post}, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 use postgrest::Postgrest;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::{model::api_doc, service::{account, salon}};
+use crate::{
+    model::api_doc,
+    service::{account, salon},
+};
 
 pub fn public_router(db: Arc<Postgrest>) -> Router {
     let api_doc = api_doc::get_api_doc();

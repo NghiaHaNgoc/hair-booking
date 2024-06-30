@@ -1,8 +1,6 @@
 use std::sync::Arc;
 
-use axum::
-    extract::{Query, State}
-;
+use axum::extract::{Query, State};
 use postgrest::Postgrest;
 use serde_json::json;
 

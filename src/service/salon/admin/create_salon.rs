@@ -6,11 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
-use crate::model::{
-    database::Salon,
-    error::AppError,
-    response::GeneralResponse,
-};
+use crate::model::{database::Salon, error::AppError, response::GeneralResponse};
 
 #[skip_serializing_none]
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]

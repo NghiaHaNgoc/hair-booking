@@ -1,16 +1,16 @@
 use std::sync::Arc;
 
-use axum::{extract::{Path, State}, http::StatusCode, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    Json,
+};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
-use crate::model::{
-    database::Salon,
-    error::AppError,
-    response::GeneralResponse,
-};
+use crate::model::{database::Salon, error::AppError, response::GeneralResponse};
 
 #[skip_serializing_none]
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
@@ -35,7 +35,7 @@ pub struct CreateSalonInput {
 )]
 pub async fn delete_salon(
     State(db): State<Arc<Postgrest>>,
-    Path(salon_id): Path<u64>
+    Path(salon_id): Path<u64>,
 ) -> Result<GeneralResponse, AppError> {
     let query = db
         .from("salons")
