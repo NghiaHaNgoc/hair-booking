@@ -1,7 +1,7 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
@@ -29,6 +29,13 @@ pub struct Salon {
     pub description: Option<String>,
     pub status: Option<String>,
     pub created_at: Option<String>,
+}
+
+
+#[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
+pub struct GeneralPagingQueryInput {
+    pub page: Option<usize>,
+    pub limit: Option<usize>
 }
 
 #[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
