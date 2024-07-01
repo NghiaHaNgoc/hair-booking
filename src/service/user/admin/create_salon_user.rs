@@ -11,7 +11,7 @@ use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
 use crate::model::{
-    database::{GeneralUserOutput, UserGender, UserRole},
+    database::{UserOutput, UserGender, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -60,7 +60,7 @@ pub async fn create_salon_user(
         .unwrap();
 
     if query.status().is_success() {
-        let user: GeneralUserOutput = query.json().await?;
+        let user: UserOutput = query.json().await?;
         GeneralResponse::ok_with_data(user)
     } else {
         let message = query.text().await?;

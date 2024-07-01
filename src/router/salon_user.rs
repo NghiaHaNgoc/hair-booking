@@ -18,6 +18,10 @@ pub fn salon_user_router(db: Arc<Postgrest>) -> Router {
         .route("/salon", get(salon::salon_user::list_salon))
         .route("/salon", post(salon::salon_user::create_salon))
         .route("/salon/:salon_id", delete(salon::salon_user::delete_salon))
+        .route(
+            "/salon/:salon_id/media/:media_id",
+            delete(salon::salon_user::delete_salon_media),
+        )
         .with_state(db)
         .layer(layer)
 }

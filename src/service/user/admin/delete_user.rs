@@ -7,7 +7,7 @@ use axum::{
 use postgrest::Postgrest;
 
 use crate::model::{
-    database::{GeneralUserOutput, User, UserRole},
+    database::{UserOutput, User, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -39,7 +39,7 @@ pub async fn delete_user(
         .await?;
 
     if query.status().is_success() {
-        let data: GeneralUserOutput = query.json().await?;
+        let data: UserOutput = query.json().await?;
         GeneralResponse::ok_with_data(data)
     } else {
         let message = "user_id is invalid!".to_string();
