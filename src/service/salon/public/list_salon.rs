@@ -6,7 +6,7 @@ use serde_json::json;
 
 use crate::{
     model::{
-        database::{GeneralPagingQueryInput, Salon},
+        database::{GeneralPagingQueryInput, Salon, SalonOuput},
         error::AppError,
         response::GeneralResponse,
     },
@@ -29,8 +29,9 @@ pub async fn list_salon(
     State(db): State<Arc<Postgrest>>,
     Query(GeneralPagingQueryInput { page, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
+    let (page, limit) = utils::extract_page_and_limit(page, limit);
     let (from_index, to_index) =
-        utils::get_query_from_to(page.unwrap_or(1), limit.unwrap_or(9999))?;
+        utils::get_query_from_to(page, limit)?;
 
     let query = db
         .from("salons")
@@ -41,12 +42,13 @@ pub async fn list_salon(
         .execute()
         .await?;
 
-    let (range, total) = utils::range_and_total_from_header(query.headers())?;
+    let total = utils::total_from_header(query.headers())?;
+    let pages = utils::total_pages(total, limit);
     if query.status().is_success() {
-        let salons: Vec<Salon> = query.json().await?;
+        let salons: Vec<SalonOuput> = query.json().await?;
         let data = json!({
             "salons": salons,
-            "range": range,
+            "pages": pages,
             "total": total
         });
         GeneralResponse::ok_with_data(data)
@@ -54,7 +56,7 @@ pub async fn list_salon(
         let salons: Vec<Salon> = Vec::new();
         let data = json!({
             "salons": salons,
-            "range": range,
+            "pages": pages,
             "total": total
         });
         GeneralResponse::ok_with_data(data)
