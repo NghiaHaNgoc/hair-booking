@@ -1,41 +1,34 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::{Path, State},
-    http::StatusCode,
-};
+use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
 
 use crate::model::{claim::Claims, database::Salon, error::AppError, response::GeneralResponse};
 
 #[utoipa::path(
-    delete,
+    get,
     tag = "Salon",
-    path = "/salon-user/salon/{salon_id}",
+    path = "/salon-user/salon",
     security(("Authorization" = [])),
     responses(
-        (status = 200, description = "Delete salon by salon user")
+        (status = 200, description = "List salon by salon user")
     )
 )]
-pub async fn delete_salon(
+pub async fn list_salon(
     State(db): State<Arc<Postgrest>>,
-    Path(salon_id): Path<u64>,
     claims: Claims,
 ) -> Result<GeneralResponse, AppError> {
     let query = db
         .from("salons")
-        .eq("id", salon_id.to_string())
+        .select("*")
         .eq("user_id", claims.id.to_string())
-        .single()
-        .delete()
         .execute()
         .await?;
 
     if query.status().is_success() {
-        let data: Salon = query.json().await?;
+        let data: Vec<Salon> = query.json().await?;
         GeneralResponse::ok_with_data(data)
     } else {
-        let message = "salon_id for this user not found!".to_string();
-        GeneralResponse::new_general(StatusCode::BAD_REQUEST, Some(message))
+        GeneralResponse::new_general(StatusCode::INTERNAL_SERVER_ERROR, None)
     }
 }
