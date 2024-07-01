@@ -6,12 +6,12 @@ use axum::{
 };
 use postgrest::Postgrest;
 
-use crate::model::{claim::Claims, database::Salon, error::AppError, response::GeneralResponse};
+use crate::model::{claim::Claims, database::{Salon, SalonOuput}, error::AppError, response::GeneralResponse};
 
 #[utoipa::path(
     delete,
     tag = "Salon",
-    path = "/salon-user/salon/{salon_id}",
+    path = "/salon-user/salon/{salonId}",
     security(("Authorization" = [])),
     responses(
         (status = 200, description = "Delete salon by salon user")
@@ -32,7 +32,7 @@ pub async fn delete_salon(
         .await?;
 
     if query.status().is_success() {
-        let data: Salon = query.json().await?;
+        let data: SalonOuput = query.json().await?;
         GeneralResponse::ok_with_data(data)
     } else {
         let message = "salon_id for this user not found!".to_string();

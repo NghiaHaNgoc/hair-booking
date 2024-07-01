@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
 
-use crate::model::{claim::Claims, database::Salon, error::AppError, response::GeneralResponse};
+use crate::model::{claim::Claims, database::SalonOuput, error::AppError, response::GeneralResponse};
 
 #[utoipa::path(
     get,
@@ -26,7 +26,7 @@ pub async fn list_salon(
         .await?;
 
     if query.status().is_success() {
-        let data: Vec<Salon> = query.json().await?;
+        let data: Vec<SalonOuput> = query.json().await?;
         GeneralResponse::ok_with_data(data)
     } else {
         GeneralResponse::new_general(StatusCode::INTERNAL_SERVER_ERROR, None)

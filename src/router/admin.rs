@@ -17,7 +17,7 @@ pub fn admin_router(db: Arc<Postgrest>) -> Router {
     Router::new()
         // User
         .route(
-            "/user/salon/:salon_id",
+            "/user/salon-user",
             post(user::admin::create_salon_user),
         )
         .route("/user/:user_id", delete(user::admin::delete_user))

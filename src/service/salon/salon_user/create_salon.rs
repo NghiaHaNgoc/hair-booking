@@ -8,7 +8,7 @@ use utoipa::ToSchema;
 
 use crate::model::{
     claim::Claims,
-    database::{MediaType, Salon},
+    database::{MediaType, Salon, SalonOuput},
     error::AppError,
     response::GeneralResponse,
 };
@@ -69,7 +69,7 @@ pub async fn create_salon(
         .await?;
 
     if query_salon.status().is_success() {
-        let salon: Salon = query_salon.json().await?;
+        let salon: SalonOuput = query_salon.json().await?;
         if let Some(mut salon_medias) = salon_medias {
             if !salon_medias.is_empty() {
                 for salon_media in salon_medias.iter_mut() {

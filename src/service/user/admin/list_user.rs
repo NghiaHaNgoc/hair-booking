@@ -7,7 +7,7 @@ use postgrest::Postgrest;
 use serde_json::json;
 
 use crate::{model::{
-    database::{GeneralPagingQueryInput, GeneralUserOutput},
+    database::{GeneralPagingQueryInput, UserOutput},
     error::AppError,
     response::GeneralResponse,
 }, utils};
@@ -42,7 +42,7 @@ pub async fn list_user(
 
     let (range, total) = utils::range_and_total_from_header(query.headers())?;
     if query.status().is_success() {
-        let salons: Vec<GeneralUserOutput> = query.json().await?;
+        let salons: Vec<UserOutput> = query.json().await?;
         let data = json!({
             "users": salons,
             "range": range,
@@ -50,7 +50,7 @@ pub async fn list_user(
         });
         GeneralResponse::ok_with_data(data)
     } else {
-        let salons: Vec<GeneralUserOutput> = Vec::new();
+        let salons: Vec<UserOutput> = Vec::new();
         let data = json!({
             "users": salons,
             "range": range,

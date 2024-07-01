@@ -1,6 +1,6 @@
 use crate::model::{
     claim::Claims,
-    database::GeneralUserOutput,
+    database::UserOutput,
     error::AppError,
     response::GeneralResponse,
 };
@@ -37,7 +37,7 @@ pub async fn get_profile(
         .execute()
         .await?;
     if query.status().is_success() {
-        let profile: GeneralUserOutput = query.json().await?;
+        let profile: UserOutput = query.json().await?;
         GeneralResponse::ok_with_data(profile)
     } else {
         GeneralResponse::new_general(StatusCode::INTERNAL_SERVER_ERROR, None)

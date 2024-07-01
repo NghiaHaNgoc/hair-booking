@@ -29,7 +29,6 @@ pub struct Salon {
     pub created_at: Option<String>,
     pub user_id: Option<u64>
 }
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SalonMedia {
     pub id: Option<u64>,
@@ -38,6 +37,7 @@ pub struct SalonMedia {
     pub media_type: Option<MediaType>
 
 }
+
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
 pub struct GeneralPagingQueryInput {
@@ -106,7 +106,7 @@ impl fmt::Display for MediaType {
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 #[schema(rename_all = "camelCase")]
-pub struct GeneralUserOutput {
+pub struct UserOutput {
     pub id: Option<u64>,
     pub username: Option<String>,
     pub email: Option<String>,
@@ -114,4 +114,30 @@ pub struct GeneralUserOutput {
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
+pub struct SalonOuput {
+    pub id: Option<u64>,
+    pub logo: Option<String>,
+    pub cover_photo: Option<String>,
+    pub name: Option<String>,
+    pub address: Option<String>,
+    pub phone: Option<String>,
+    pub email: Option<String>,
+    pub description: Option<String>,
+    pub status: Option<GeneralStatus>,
+    pub created_at: Option<String>,
+    pub user_id: Option<u64>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
+pub struct SalonMediaOutput {
+    pub id: Option<u64>,
+    pub salon_id: Option<u64>,
+    pub url: Option<String>,
+    pub media_type: Option<MediaType>
+
 }
