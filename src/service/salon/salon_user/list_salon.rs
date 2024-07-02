@@ -3,7 +3,9 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
 
-use crate::model::{claim::Claims, database::SalonOuput, error::AppError, response::GeneralResponse};
+use crate::model::{
+    claim::Claims, database::SalonOuput, error::AppError, response::GeneralResponse,
+};
 
 #[utoipa::path(
     get,

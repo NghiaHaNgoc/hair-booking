@@ -22,6 +22,7 @@ use crate::model::{
 pub struct SignupInput {
     username: String,
     password: String,
+    full_name: Option<String>,
     email: Option<String>,
     gender: Option<UserGender>,
     #[serde(skip_deserializing)]
@@ -55,6 +56,7 @@ pub async fn sign_up(
         let token = Claims::create_token(&user)?;
         let data = json!({
             "username": user.username,
+            "fullName": user.full_name,
             "email": user.email,
             "role": user.role,
             "avatar": user.avatar,
@@ -64,7 +66,7 @@ pub async fn sign_up(
     } else {
         let db_error: SupabaseError = query.json().await?;
         let message = match db_error.code.as_str() {
-            "22007" => "Invalid date format.".to_string(),
+            // "22007" => "Invalid date format.".to_string(),
             "23505" => "username already existed.".to_string(),
             _ => serde_json::to_string(&db_error)?,
         };

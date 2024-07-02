@@ -8,6 +8,7 @@ pub struct User {
     pub id: Option<u64>,
     pub username: Option<String>,
     pub password: Option<String>,
+    pub full_name: Option<String>,
     pub email: Option<String>,
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
@@ -27,17 +28,15 @@ pub struct Salon {
     pub description: Option<String>,
     pub status: Option<GeneralStatus>,
     pub created_at: Option<String>,
-    pub user_id: Option<u64>
+    pub user_id: Option<u64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SalonMedia {
     pub id: Option<u64>,
     pub salon_id: Option<u64>,
     pub url: Option<String>,
-    pub media_type: Option<MediaType>
-
+    pub media_type: Option<MediaType>,
 }
-
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
 pub struct GeneralPagingQueryInput {
@@ -52,7 +51,10 @@ pub enum UserGender {
 }
 
 #[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
-#[serde(rename_all(serialize = "SCREAMING_SNAKE_CASE", deserialize = "SCREAMING_SNAKE_CASE"))]
+#[serde(rename_all(
+    serialize = "SCREAMING_SNAKE_CASE",
+    deserialize = "SCREAMING_SNAKE_CASE"
+))]
 #[schema(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserRole {
     Admin,
@@ -72,7 +74,6 @@ pub enum MediaType {
     VIDEO,
 }
 
-
 impl fmt::Display for UserGender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -84,7 +85,7 @@ impl fmt::Display for UserRole {
         let role = match self {
             UserRole::Admin => "ADMIN",
             UserRole::SalonUser => "SALON_USER",
-            UserRole::Customer => "CUSTOMER"
+            UserRole::Customer => "CUSTOMER",
         };
         write!(f, "{}", role)
     }
@@ -102,13 +103,13 @@ impl fmt::Display for MediaType {
     }
 }
 
-
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 #[schema(rename_all = "camelCase")]
 pub struct UserOutput {
     pub id: Option<u64>,
     pub username: Option<String>,
+    pub full_name: Option<String>,
     pub email: Option<String>,
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
@@ -129,7 +130,7 @@ pub struct SalonOuput {
     pub description: Option<String>,
     pub status: Option<GeneralStatus>,
     pub created_at: Option<String>,
-    pub user_id: Option<u64>
+    pub user_id: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -138,6 +139,5 @@ pub struct SalonMediaOutput {
     pub id: Option<u64>,
     pub salon_id: Option<u64>,
     pub url: Option<String>,
-    pub media_type: Option<MediaType>
-
+    pub media_type: Option<MediaType>,
 }

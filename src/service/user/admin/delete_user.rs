@@ -7,7 +7,7 @@ use axum::{
 use postgrest::Postgrest;
 
 use crate::model::{
-    database::{UserOutput, User, UserRole},
+    database::{User, UserOutput, UserRole},
     error::AppError,
     response::GeneralResponse,
 };

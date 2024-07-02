@@ -30,8 +30,7 @@ pub async fn list_salon(
     Query(GeneralPagingQueryInput { page, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
     let (page, limit) = utils::extract_page_and_limit(page, limit);
-    let (from_index, to_index) =
-        utils::get_query_from_to(page, limit)?;
+    let (from_index, to_index) = utils::get_query_from_to(page, limit)?;
 
     let query = db
         .from("salons")

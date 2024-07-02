@@ -1,16 +1,14 @@
 use crate::model::{
-    claim::Claims,
-    database::UserOutput,
-    error::AppError,
-    response::GeneralResponse,
+    claim::Claims, database::UserOutput, error::AppError, response::GeneralResponse,
 };
 use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
 use std::sync::Arc;
 
-const QUERY_FIELD: [&str; 7] = [
+const QUERY_FIELD: [&str; 8] = [
     "id",
     "username",
+    "full_name",
     "email",
     "gender",
     "role",

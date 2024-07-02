@@ -6,7 +6,12 @@ use axum::{
 };
 use postgrest::Postgrest;
 
-use crate::model::{claim::Claims, database::{Salon, SalonOuput}, error::AppError, response::GeneralResponse};
+use crate::model::{
+    claim::Claims,
+    database::{Salon, SalonOuput},
+    error::AppError,
+    response::GeneralResponse,
+};
 
 #[utoipa::path(
     delete,
