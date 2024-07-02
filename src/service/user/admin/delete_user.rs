@@ -7,7 +7,7 @@ use axum::{
 use postgrest::Postgrest;
 
 use crate::model::{
-    database::{User, UserOutput, UserRole},
+    database::{UserOutput, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -15,7 +15,7 @@ use crate::model::{
 #[utoipa::path(
     delete,
     tag = "User",
-    path = "/admin/user/{user_id}",
+    path = "/admin/user/{userId}",
     security(("Authorization" = [])),
     responses(
         (status = 200, description = "Delete user have role CUSTOMER or SALON_USER by admin")

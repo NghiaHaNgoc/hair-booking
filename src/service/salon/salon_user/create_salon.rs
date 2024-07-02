@@ -13,6 +13,8 @@ use crate::model::{
     response::GeneralResponse,
 };
 
+use super::create_salon_media::CreateSalonMediaInput;
+
 #[skip_serializing_none]
 #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "snake_case", deserialize = "camelCase"))]
@@ -30,16 +32,16 @@ pub struct CreateSalonInput {
     pub medias: Option<Vec<CreateSalonMediaInput>>,
 }
 
-#[skip_serializing_none]
-#[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "snake_case", deserialize = "camelCase"))]
-#[schema(rename_all = "camelCase")]
-pub struct CreateSalonMediaInput {
-    #[serde(skip_deserializing)]
-    pub salon_id: Option<u64>,
-    pub url: String,
-    pub media_type: MediaType,
-}
+// #[skip_serializing_none]
+// #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
+// #[serde(rename_all(serialize = "snake_case", deserialize = "camelCase"))]
+// #[schema(rename_all = "camelCase")]
+// pub struct CreateSalonMediaInput {
+//     #[serde(skip_deserializing)]
+//     pub salon_id: Option<u64>,
+//     pub url: String,
+//     pub media_type: MediaType,
+// }
 
 #[utoipa::path(
     post,

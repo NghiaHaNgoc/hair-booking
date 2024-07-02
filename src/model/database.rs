@@ -103,9 +103,8 @@ impl fmt::Display for MediaType {
     }
 }
 
-#[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-#[schema(rename_all = "camelCase")]
 pub struct UserOutput {
     pub id: Option<u64>,
     pub username: Option<String>,
