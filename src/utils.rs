@@ -31,3 +31,17 @@ pub fn total_pages(total: usize, limit: usize) -> usize {
 pub fn extract_page_and_limit(page: Option<usize>, limit: Option<usize>) -> (usize, usize) {
     (page.unwrap_or(1), limit.unwrap_or(9999))
 }
+
+use std::collections::HashMap;
+use std::sync::OnceLock;
+
+fn hashmap() -> &'static HashMap<&'static str, &'static str> {
+    static HASHMAP: OnceLock<HashMap<&str, &str>> = OnceLock::new();
+    HASHMAP.get_or_init(|| {
+        let mut m = HashMap::new();
+        m.insert("0", "foo");
+        m.insert("1", "bar");
+        m.insert("2", "baz");
+        m
+    })
+}
