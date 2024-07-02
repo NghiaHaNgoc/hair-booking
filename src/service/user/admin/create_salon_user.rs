@@ -1,17 +1,13 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::State,
-    http::StatusCode,
-    Json,
-};
+use axum::{extract::State, http::StatusCode, Json};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
 use crate::model::{
-    database::{UserOutput, UserGender, UserRole},
+    database::{UserGender, UserOutput, UserRole},
     error::AppError,
     response::GeneralResponse,
 };
@@ -23,6 +19,7 @@ use crate::model::{
 pub struct CreateSalonUserInput {
     username: String,
     password: String,
+    full_name: Option<String>,
     email: Option<String>,
     gender: Option<UserGender>,
     #[serde(skip_deserializing)]

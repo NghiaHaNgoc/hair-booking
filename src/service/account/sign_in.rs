@@ -14,7 +14,15 @@ pub struct LoginInput {
     password: String,
 }
 
-const QUERY_FIELD: [&str; 6] = ["id", "username", "email", "password", "role", "avatar"];
+const QUERY_FIELD: [&str; 7] = [
+    "id",
+    "username",
+    "email",
+    "password",
+    "full_name",
+    "role",
+    "avatar",
+];
 
 #[utoipa::path(post, tag = "Account", path = "/account/sign-in")]
 
@@ -39,6 +47,7 @@ pub async fn sign_in(
             let token = Claims::create_token(&user)?;
             let result = json!({
                 "username": user.username,
+                "fullName": user.full_name,
                 "email": user.email,
                 "role": user.role,
                 "avatar": user.avatar,
