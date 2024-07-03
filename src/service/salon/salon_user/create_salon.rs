@@ -7,10 +7,7 @@ use serde_with::skip_serializing_none;
 use utoipa::ToSchema;
 
 use crate::model::{
-    claim::Claims,
-    database::{MediaType, Salon, SalonOuput},
-    error::AppError,
-    response::GeneralResponse,
+    claim::Claims, database::SalonOuput, error::AppError, response::GeneralResponse,
 };
 
 use super::create_salon_media::CreateSalonMediaInput;
@@ -31,17 +28,6 @@ pub struct CreateSalonInput {
     pub user_id: Option<u64>,
     pub medias: Option<Vec<CreateSalonMediaInput>>,
 }
-
-// #[skip_serializing_none]
-// #[derive(ToSchema, Serialize, Deserialize, Debug, Clone)]
-// #[serde(rename_all(serialize = "snake_case", deserialize = "camelCase"))]
-// #[schema(rename_all = "camelCase")]
-// pub struct CreateSalonMediaInput {
-//     #[serde(skip_deserializing)]
-//     pub salon_id: Option<u64>,
-//     pub url: String,
-//     pub media_type: MediaType,
-// }
 
 #[utoipa::path(
     post,

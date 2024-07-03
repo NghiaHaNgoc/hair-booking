@@ -9,7 +9,7 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use crate::{
     model::api_doc,
-    service::{account, salon},
+    service::{account, salon, salon_bed},
 };
 
 pub fn public_router(db: Arc<Postgrest>) -> Router {
@@ -20,5 +20,6 @@ pub fn public_router(db: Arc<Postgrest>) -> Router {
         .route("/account/sign-up", post(account::sign_up))
         .route("/public/salon", get(salon::public::list_salon))
         .route("/public/salon/:salon_id", get(salon::public::salon_detail))
+        .route("/public/salon/:salon_id/salon-bed", get(salon_bed::public::list_salon_bed))
         .with_state(db)
 }

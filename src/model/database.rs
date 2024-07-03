@@ -1,5 +1,6 @@
 use std::fmt;
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -13,7 +14,7 @@ pub struct User {
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
-    pub created_at: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -27,7 +28,7 @@ pub struct Salon {
     pub email: Option<String>,
     pub description: Option<String>,
     pub status: Option<GeneralStatus>,
-    pub created_at: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
     pub user_id: Option<u64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -36,6 +37,15 @@ pub struct SalonMedia {
     pub salon_id: Option<u64>,
     pub url: Option<String>,
     pub media_type: Option<MediaType>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct SalonBed {
+    pub id: Option<u64>,
+    pub salon_id: Option<u64>,
+    pub name: Option<String>,
+    pub status: Option<GeneralStatus>,
+    pub created_at: Option<DateTime<Utc>>
 }
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
@@ -113,7 +123,7 @@ pub struct UserOutput {
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
-    pub created_at: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -128,7 +138,7 @@ pub struct SalonOuput {
     pub email: Option<String>,
     pub description: Option<String>,
     pub status: Option<GeneralStatus>,
-    pub created_at: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
     pub user_id: Option<u64>,
 }
 
@@ -139,4 +149,14 @@ pub struct SalonMediaOutput {
     pub salon_id: Option<u64>,
     pub url: Option<String>,
     pub media_type: Option<MediaType>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
+pub struct SalonBedOutput {
+    pub id: Option<u64>,
+    pub salon_id: Option<u64>,
+    pub name: Option<String>,
+    pub status: Option<GeneralStatus>,
+    pub created_at: Option<DateTime<Utc>>
 }

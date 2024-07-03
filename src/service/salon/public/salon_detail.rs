@@ -1,17 +1,17 @@
 use std::sync::Arc;
 
-use axum::{extract::{Path, Query, State}, http::StatusCode};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+};
+use chrono::{DateTime, Utc};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
-use crate::{
-    model::{
-        database::{GeneralPagingQueryInput, GeneralStatus, Salon, SalonMediaOutput, SalonOuput},
-        error::AppError,
-        response::GeneralResponse,
-    },
-    utils,
+use crate::model::{
+    database::{GeneralStatus, SalonMediaOutput},
+    error::AppError,
+    response::GeneralResponse,
 };
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -26,9 +26,9 @@ pub struct SalonDetailOuput {
     pub email: Option<String>,
     pub description: Option<String>,
     pub status: Option<GeneralStatus>,
-    pub created_at: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
     pub user_id: Option<u64>,
-    pub medias: Option<Vec<SalonMediaOutput>>
+    pub medias: Option<Vec<SalonMediaOutput>>,
 }
 
 #[utoipa::path(
@@ -42,7 +42,7 @@ pub struct SalonDetailOuput {
 
 pub async fn salon_detail(
     State(db): State<Arc<Postgrest>>,
-    Path(salon_id): Path<u64>
+    Path(salon_id): Path<u64>,
 ) -> Result<GeneralResponse, AppError> {
     let query = db
         .from("salons")

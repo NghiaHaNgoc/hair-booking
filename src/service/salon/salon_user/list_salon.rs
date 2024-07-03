@@ -16,7 +16,7 @@ use crate::model::{
         (status = 200, description = "List salon by salon user")
     )
 )]
-pub async fn list_salon(
+pub async fn list_salon_of_user(
     State(db): State<Arc<Postgrest>>,
     claims: Claims,
 ) -> Result<GeneralResponse, AppError> {
