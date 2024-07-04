@@ -20,6 +20,9 @@ pub fn public_router(db: Arc<Postgrest>) -> Router {
         .route("/account/sign-up", post(account::sign_up))
         .route("/public/salon", get(salon::public::list_salon))
         .route("/public/salon/:salon_id", get(salon::public::salon_detail))
-        .route("/public/salon/:salon_id/salon-bed", get(salon_bed::public::list_salon_bed))
+        .route(
+            "/public/salon/:salon_id/salon-bed",
+            get(salon_bed::public::list_salon_bed),
+        )
         .with_state(db)
 }

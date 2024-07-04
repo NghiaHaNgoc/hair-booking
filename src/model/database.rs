@@ -45,7 +45,7 @@ pub struct SalonBed {
     pub salon_id: Option<u64>,
     pub name: Option<String>,
     pub status: Option<GeneralStatus>,
-    pub created_at: Option<DateTime<Utc>>
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
@@ -158,5 +158,5 @@ pub struct SalonBedOutput {
     pub salon_id: Option<u64>,
     pub name: Option<String>,
     pub status: Option<GeneralStatus>,
-    pub created_at: Option<DateTime<Utc>>
+    pub created_at: Option<DateTime<Utc>>,
 }

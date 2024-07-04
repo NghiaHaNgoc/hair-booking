@@ -12,6 +12,7 @@ pub mod public;
 #[openapi(
     paths(
         salon_user::create_salon_bed::create_salon_bed,
+        salon_user::delete_salon_bed::delete_salon_bed,
         public::list_salon_bed::list_salon_bed
     ),
     components(
