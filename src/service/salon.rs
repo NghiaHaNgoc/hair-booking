@@ -6,7 +6,8 @@ use crate::model::{
 };
 
 use self::salon_user::{
-    create_salon::CreateSalonInput, create_salon_media::CreateSalonMediaInput, update_salon::UpdateSalonInput
+    create_salon::CreateSalonInput, create_salon_media::CreateSalonMediaInput,
+    update_salon::UpdateSalonInput,
 };
 
 pub mod admin;

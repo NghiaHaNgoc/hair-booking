@@ -3,13 +3,7 @@ use std::sync::Arc;
 use axum::extract::{Path, Query, State};
 use postgrest::Postgrest;
 
-use crate::
-    model::{
-        database::SalonBedOutput,
-        error::AppError,
-        response::GeneralResponse,
-    }
-;
+use crate::model::{database::SalonBedOutput, error::AppError, response::GeneralResponse};
 
 #[utoipa::path(
     get,
