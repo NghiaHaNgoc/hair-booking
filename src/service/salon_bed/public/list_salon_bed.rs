@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use axum::extract::{Path, Query, State};
+use axum::extract::{Path, State};
 use postgrest::Postgrest;
 
 use crate::model::{database::SalonBedOutput, error::AppError, response::GeneralResponse};

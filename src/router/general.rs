@@ -1,9 +1,6 @@
 use std::sync::Arc;
 
-use axum::{
-    routing::{get, post},
-    Router,
-};
+use axum::{routing::get, Router};
 use postgrest::Postgrest;
 
 use crate::service::account;
