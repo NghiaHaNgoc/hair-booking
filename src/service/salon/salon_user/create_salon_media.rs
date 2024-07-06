@@ -12,7 +12,7 @@ use utoipa::ToSchema;
 
 use crate::model::{
     claim::Claims,
-    database::{MediaType, SalonMediaOutput, SalonOuput},
+    database::{MediaType, SalonMediaOutput},
     error::AppError,
     response::GeneralResponse,
 };

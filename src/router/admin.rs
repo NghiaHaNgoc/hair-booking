@@ -7,10 +7,7 @@ use axum::{
 };
 use postgrest::Postgrest;
 
-use crate::{
-    layer,
-    service::{salon, user},
-};
+use crate::{layer, service::user};
 
 pub fn admin_router(db: Arc<Postgrest>) -> Router {
     let layer = middleware::from_fn(layer::admin_layer);

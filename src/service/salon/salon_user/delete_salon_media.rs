@@ -7,10 +7,7 @@ use axum::{
 use postgrest::Postgrest;
 
 use crate::model::{
-    claim::Claims,
-    database::{SalonMedia, SalonMediaOutput},
-    error::AppError,
-    response::GeneralResponse,
+    claim::Claims, database::SalonMediaOutput, error::AppError, response::GeneralResponse,
 };
 
 #[utoipa::path(
