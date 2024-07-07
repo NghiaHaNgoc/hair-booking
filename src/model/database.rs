@@ -48,6 +48,19 @@ pub struct SalonBed {
     pub created_at: Option<DateTime<Utc>>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Reservation {
+    pub id: Option<u64>,
+    pub user_id: Option<u64>,
+    pub salon_bed_id: Option<u64>,
+    pub time_from: Option<DateTime<Utc>>,
+    pub time_to: Option<DateTime<Utc>>,
+    pub comment: Option<String>,
+    pub status: Option<ReservationStatus>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
+}
+
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
 pub struct GeneralPagingQueryInput {
     pub page: Option<usize>,
@@ -84,6 +97,13 @@ pub enum MediaType {
     VIDEO,
 }
 
+#[derive(ToSchema, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
+pub enum ReservationStatus {
+    WAITING,
+    DONE,
+    CANCEL
+}
+
 impl fmt::Display for UserGender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -108,6 +128,12 @@ impl fmt::Display for GeneralStatus {
 }
 
 impl fmt::Display for MediaType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl fmt::Display for ReservationStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }
@@ -159,4 +185,17 @@ pub struct SalonBedOutput {
     pub name: Option<String>,
     pub status: Option<GeneralStatus>,
     pub created_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ReservationOuput {
+    pub id: Option<u64>,
+    pub user_id: Option<u64>,
+    pub salon_bed_id: Option<u64>,
+    pub time_from: Option<DateTime<Utc>>,
+    pub time_to: Option<DateTime<Utc>>,
+    pub comment: Option<String>,
+    pub status: Option<ReservationStatus>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }

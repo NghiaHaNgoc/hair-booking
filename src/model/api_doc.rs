@@ -6,7 +6,7 @@ use utoipa::{
     Modify, OpenApi,
 };
 
-use crate::service::{account, salon, salon_bed, user};
+use crate::service::{account, reservation, salon, salon_bed, user};
 
 pub struct SecurityAddon;
 
@@ -26,5 +26,6 @@ pub fn get_api_doc() -> openapi::OpenApi {
     api_doc.merge(salon::SalonApiDoc::openapi());
     api_doc.merge(user::UserApiDoc::openapi());
     api_doc.merge(salon_bed::SalonBedApiDoc::openapi());
+    api_doc.merge(reservation::ReservationApiDoc::openapi());
     api_doc
 }
