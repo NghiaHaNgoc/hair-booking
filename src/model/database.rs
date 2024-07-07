@@ -15,6 +15,7 @@ pub struct User {
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -150,6 +151,7 @@ pub struct UserOutput {
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -188,14 +190,18 @@ pub struct SalonBedOutput {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct ReservationOuput {
     pub id: Option<u64>,
     pub user_id: Option<u64>,
     pub salon_bed_id: Option<u64>,
+    pub salon_id: Option<u64>,
     pub time_from: Option<DateTime<Utc>>,
     pub time_to: Option<DateTime<Utc>>,
     pub comment: Option<String>,
     pub status: Option<ReservationStatus>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
+    #[serde(skip_serializing)]
+    pub salon_bed: Option<SalonBedOutput>
 }
