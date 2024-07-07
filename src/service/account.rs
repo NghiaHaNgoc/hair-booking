@@ -1,6 +1,7 @@
 mod get_profile;
 mod sign_in;
 mod sign_up;
+mod update_profile;
 
 pub use get_profile::get_profile;
 pub use sign_in::sign_in;

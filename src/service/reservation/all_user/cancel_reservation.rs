@@ -30,12 +30,17 @@ pub async fn cancel_reservation(
         .eq("id", reservation_id.to_string())
         .eq("user_id", claims.id.to_string())
         .update(r#"{"status": "CANCEL"}"#)
+        .select("*, salon_bed:salon_beds(salon_id)")
         .single()
         .execute()
         .await?;
 
     if query.status().is_success() {
-        let reservation: ReservationOuput = query.json().await?;
+        let mut reservation: ReservationOuput = query.json().await?;
+        if let Some(salon_bed) = reservation.salon_bed.as_ref() {
+            reservation.salon_id = salon_bed.salon_id;
+        };
+
         GeneralResponse::ok_with_data(reservation)
     } else {
         let message = "This reservation of this user already canceled or not found.".to_string();

@@ -1,16 +1,10 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::{Path, Query, State},
-    http::StatusCode,
-    Json,
-};
-use chrono::{DateTime, Utc};
+use axum::
+    extract::{Query, State}
+;
 use postgrest::Postgrest;
-use serde::{Deserialize, Serialize};
 use serde_json::json;
-use serde_with::skip_serializing_none;
-use utoipa::ToSchema;
 
 use crate::{
     model::{
@@ -44,18 +38,25 @@ pub async fn list_reservation_history(
 
     let query = db
         .from("reservations")
-        .select("*")
+        .select("*, salon_bed:salon_beds(salon_id)")
         .eq("user_id", claims.id.to_string())
         .order("time_from.desc")
         .exact_count()
-        .range(from_index, to_index).execute().await?;
+        .range(from_index, to_index)
+        .execute()
+        .await?;
 
     let total = utils::total_from_header(query.headers())?;
     let pages = utils::total_pages(total, limit);
     if query.status().is_success() {
-        let salons: Vec<ReservationOuput> = query.json().await?;
+        let mut salons: Vec<ReservationOuput> = query.json().await?;
+        for reservation in salons.iter_mut() {
+            if let Some(salon_bed) = reservation.salon_bed.as_ref() {
+                reservation.salon_id = salon_bed.salon_id;
+            };
+        }
         let data = json!({
-            "users": salons,
+            "reservations": salons,
             "pages": pages,
             "total": total
         });
@@ -63,7 +64,7 @@ pub async fn list_reservation_history(
     } else {
         let salons: Vec<ReservationOuput> = Vec::new();
         let data = json!({
-            "users": salons,
+            "reservations": salons,
             "pages": pages,
             "total": total
         });
