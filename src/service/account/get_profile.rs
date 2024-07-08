@@ -5,10 +5,11 @@ use axum::{extract::State, http::StatusCode};
 use postgrest::Postgrest;
 use std::sync::Arc;
 
-const QUERY_FIELD: [&str; 8] = [
+const QUERY_FIELD: [&str; 9] = [
     "id",
     "username",
     "full_name",
+    "date_of_birth",
     "email",
     "gender",
     "role",
