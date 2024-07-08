@@ -27,9 +27,9 @@ const QUERY_FIELD: [&str; 8] = [
 pub struct UpdateUserProfileInput {
     pub username: Option<String>,
     pub full_name: Option<String>,
+    pub date_of_birth: Option<String>,
     pub email: Option<String>,
     pub gender: Option<UserGender>,
-    pub role: Option<UserRole>,
     pub avatar: Option<String>,
     #[serde(skip_deserializing)]
     pub updated_at: Option<DateTime<Utc>>,
@@ -46,12 +46,6 @@ pub async fn update_profile(
     claims: Claims,
     Json(mut input): Json<UpdateUserProfileInput>
 ) -> Result<GeneralResponse, AppError> {
-    if let Some(role) = input.role {
-        if claims.role != UserRole::Admin && role == UserRole::Admin {
-            let message = "Can not change CUSTOMER and SALON_USER to ADMIN.".to_string();
-            return GeneralResponse::new_general(StatusCode::BAD_REQUEST, Some(message))
-        }
-    }
     input.updated_at = Some(Utc::now());
     let input_json = serde_json::to_string(&input)?;
     let query = db
