@@ -1,8 +1,7 @@
 use super::response::GeneralResponse;
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
+use axum::
+    response::{IntoResponse, Response}
+;
 
 #[derive(Debug)]
 pub struct AppError(anyhow::Error);
@@ -18,7 +17,7 @@ impl AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let message = format!("Error: {}", self.0);
-        let res = GeneralResponse::new_general(StatusCode::INTERNAL_SERVER_ERROR, Some(message));
+        let res = GeneralResponse::new_error(message);
         res.into_response()
     }
 }

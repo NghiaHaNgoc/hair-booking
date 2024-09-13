@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Claims {
-    pub id: u64,
+    pub id: i64,
     pub username: String,
     pub role: UserRole,
     pub exp: u64,
@@ -37,9 +37,8 @@ where
             match parts.extract::<TypedHeader<Authorization<Bearer>>>().await {
                 Ok(header) => header,
                 Err(err) => {
-                    let status = axum::http::StatusCode::UNAUTHORIZED;
                     let message = err.to_string();
-                    let res = GeneralResponse::new_general(status, Some(message)).unwrap();
+                    let res = GeneralResponse::new_error(message).unwrap();
                     return Err(res);
                 }
             };
@@ -53,9 +52,8 @@ where
         ) {
             Ok(data) => data,
             Err(err) => {
-                let status = axum::http::StatusCode::BAD_REQUEST;
                 let message = err.to_string();
-                let res = GeneralResponse::new_general(status, Some(message)).unwrap();
+                let res = GeneralResponse::new_error(message).unwrap();
                 return Err(res);
             }
         };
@@ -67,6 +65,15 @@ where
 const HOUR_TO_SECOND: u64 = 60 * 60;
 
 impl Claims {
+    pub fn from_token(token: &str) -> Result<Self, AppError> {
+        let secret_key = env::var("JWT_KEY").expect("JWT_KEY must be set!");
+        let token_data = decode::<Claims>(
+            token,
+            &DecodingKey::from_secret(secret_key.as_bytes()),
+            &Validation::default(),
+        )?;
+        Ok(token_data.claims)
+    }
     pub fn create_token(user: &User) -> Result<String, AppError> {
         // Extract data from db
         let id = match user.id {
