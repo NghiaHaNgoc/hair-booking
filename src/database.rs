@@ -1,9 +1,9 @@
 use std::env;
 
-use postgrest::Postgrest;
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 
-pub fn database_connection() -> Postgrest {
-    let endpoint = env::var("HB_SUPABASE_ENDPOINT").expect("HB_SUPABASE_ENDPOINT should be set!");
-    let api_key = env::var("HB_SUPABASE_API_KEY").expect("HB_SUPABASE_API_KEY should be set!");
-    Postgrest::new(endpoint).insert_header("apikey", api_key)
+pub async fn database_connection() -> Result<Pool<Postgres>, sqlx::Error> {
+    let url = env::var("DATABASE_URL").expect("DATABASE_URL must be set!");
+    let pool = PgPoolOptions::new().connect(&url).await?;
+    Ok(pool)
 }

@@ -5,8 +5,9 @@ use utoipa::{
     },
     Modify, OpenApi,
 };
+use uuid::Uuid;
 
-use crate::service::{account, reservation, salon, salon_bed, user};
+use crate::router::{general::GeneralApiDoc, public::PublicApiDoc};
 
 pub struct SecurityAddon;
 
@@ -22,10 +23,13 @@ impl Modify for SecurityAddon {
 }
 
 pub fn get_api_doc() -> openapi::OpenApi {
-    let mut api_doc = account::AccountApiDoc::openapi();
-    api_doc.merge(salon::SalonApiDoc::openapi());
-    api_doc.merge(user::UserApiDoc::openapi());
-    api_doc.merge(salon_bed::SalonBedApiDoc::openapi());
-    api_doc.merge(reservation::ReservationApiDoc::openapi());
+    let mut api_doc = PublicApiDoc::openapi();
+    api_doc.merge(GeneralApiDoc::openapi());
+
+    for (_, j) in api_doc.paths.paths.iter_mut() {
+        for (_, y) in j.operations.iter_mut() {
+            y.operation_id = Some(Uuid::new_v4().to_string());
+        }
+    }
     api_doc
 }

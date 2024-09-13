@@ -10,12 +10,11 @@ mod database;
 mod layer;
 mod model;
 mod router;
-mod service;
 mod utils;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let db = database::database_connection();
+    let db = database::database_connection().await?;
     let app = router::all_router(Arc::new(db));
     let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 8080));
     let listener = TcpListener::bind(&address).await?;
