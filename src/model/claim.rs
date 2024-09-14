@@ -62,7 +62,7 @@ where
     }
 }
 
-const HOUR_TO_SECOND: u64 = 60 * 60;
+pub const HOUR_TO_SECOND: u64 = 60 * 60;
 
 impl Claims {
     pub fn from_token(token: &str) -> Result<Self, AppError> {

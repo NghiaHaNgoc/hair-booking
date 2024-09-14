@@ -1,18 +1,19 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use axum::{
     extract::State,
-    http::{header, HeaderMap},
+    http::{header, HeaderMap, StatusCode},
     Json,
 };
-use axum_extra::extract::cookie::Cookie;
+use axum_extra::extract::cookie::{Cookie, Expiration};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::{Pool, Postgres};
+use sqlx::{types::time::OffsetDateTime, Pool, Postgres};
 use utoipa::ToSchema;
 
 use crate::model::{
-    claim::Claims,
+    claim::{Claims, HOUR_TO_SECOND},
     database::{User, UserGender},
     error::AppError,
     response::GeneralResponse,
@@ -39,12 +40,13 @@ pub async fn sign_up(
     Json(mut signup_input): Json<SignupInput>,
 ) -> Result<GeneralResponse, AppError> {
     let validate_user: Vec<User> =
-        sqlx::query_as("SELECT date_of_birth::text,* FROM users where username = $1")
+        sqlx::query_as("SELECT *, date_of_birth::text FROM users where username = $1")
             .bind(signup_input.username.as_str())
             .fetch_all(db.as_ref())
             .await?;
     if !validate_user.is_empty() {
-        return GeneralResponse::new_general("S0001");
+        let message = "Username already existed!".to_string();
+        return GeneralResponse::new_error(message);
     }
 
     //Hash password
@@ -77,7 +79,7 @@ pub async fn sign_up(
         "token": token
     });
 
-    GeneralResponse::new(header, "G0001", data)
+    GeneralResponse::new(StatusCode::OK, header, data)
 }
 
 // ------------------------------------------------------------------------------------
@@ -105,19 +107,22 @@ pub async fn sign_in(
         .await
     {
         Ok(user) => user,
-        Err(_) => return GeneralResponse::new_general("S0002"),
+        Err(_) => return GeneralResponse::new_general(StatusCode::UNAUTHORIZED),
     };
     let is_valid_password = bcrypt::verify(
         signin_input.password,
         &user.password.clone().unwrap_or_default(),
     )?;
     if !is_valid_password {
-        return GeneralResponse::new_general("S0003");
+        return GeneralResponse::new_general(StatusCode::UNAUTHORIZED);
     }
     let token = Claims::create_token(&user)?;
 
+    let expires =
+        Expiration::from(OffsetDateTime::now_utc() + Duration::from_secs(HOUR_TO_SECOND * 24 * 30));
     let cookie = Cookie::build(("token", &token))
         .path("/")
+        .expires(expires)
         .secure(true)
         .http_only(true);
     let mut header = HeaderMap::new();
@@ -131,5 +136,19 @@ pub async fn sign_in(
         "token": token
     });
 
-    GeneralResponse::new(header, "G0001", data)
+    GeneralResponse::new(StatusCode::OK, header, data)
+}
+
+#[utoipa::path(delete, tag = "Account", path = "/account/sign-out")]
+pub async fn sign_out() -> Result<GeneralResponse, AppError> {
+    let expires = Expiration::from(OffsetDateTime::UNIX_EPOCH);
+    let cookie = Cookie::build(("token", ""))
+        .path("/")
+        .expires(expires)
+        .secure(true)
+        .http_only(true);
+    let mut header = HeaderMap::new();
+    header.append(header::SET_COOKIE, cookie.to_string().parse()?);
+
+    GeneralResponse::new(StatusCode::OK, header, Option::<bool>::None)
 }

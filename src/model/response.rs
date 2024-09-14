@@ -16,19 +16,19 @@ pub struct GeneralResponse {
 // NOTE: General response for all layer and handler
 impl GeneralResponse {
     pub fn new<T: Serialize>(
+        status: StatusCode,
         header: HeaderMap,
-        message_code: &str,
         data: T,
     ) -> Result<GeneralResponse, AppError> {
-        let body_obj = GeneralBody::new(message_code.to_string(), Some(data));
+        let body_obj = GeneralBody::new(status, Some(data));
         let body = serde_json::to_string(&body_obj)?;
 
         let res = GeneralResponse { header, body };
         Ok(res)
     }
 
-    pub fn new_general(message_code: &str) -> Result<GeneralResponse, AppError> {
-        let general_body = GeneralBody::<bool>::new(message_code.to_string(), None);
+    pub fn new_general(status: StatusCode) -> Result<GeneralResponse, AppError> {
+        let general_body = GeneralBody::<bool>::new(status, None);
         let body = serde_json::to_string(&general_body)?;
 
         let res = GeneralResponse {
@@ -39,7 +39,7 @@ impl GeneralResponse {
     }
 
     pub fn new_error(message: String) -> Result<Self, AppError> {
-        let general_body = GeneralBody::<bool>::new_custom("G0004".to_string(), message, None);
+        let general_body = GeneralBody::<bool>::new_custom(StatusCode::BAD_REQUEST, message, None);
         let body = serde_json::to_string(&general_body)?;
         let res = GeneralResponse {
             header: HeaderMap::new(),
@@ -49,8 +49,8 @@ impl GeneralResponse {
     }
 
     pub fn ok_with_data<T: Serialize>(data: T) -> Result<GeneralResponse, AppError> {
-        let message_code = "G0001".to_string();
-        let general_body = GeneralBody::new(message_code, Some(data));
+        let status = StatusCode::OK;
+        let general_body = GeneralBody::new(status, Some(data));
         let body = serde_json::to_string(&general_body)?;
 
         let res = GeneralResponse {
@@ -75,27 +75,27 @@ impl IntoResponse for GeneralResponse {
 #[serde(rename_all(serialize = "camelCase"))]
 pub struct GeneralBody<T> {
     data: Option<T>,
-    message_code: String,
+    status: u16,
     message: String,
 }
 
 impl<T: Serialize> GeneralBody<T> {
-    pub fn new(message_code: String, data: Option<T>) -> GeneralBody<T> {
-        let message = match response_message::response_message().get(message_code.as_str()) {
+    pub fn new(status: StatusCode, data: Option<T>) -> GeneralBody<T> {
+        let message = match response_message::response_message().get(&status) {
             Some(msg) => msg.to_string(),
             None => "Undefied!".to_string(),
         };
         GeneralBody {
             data,
-            message_code,
+            status: status.as_u16(),
             message,
         }
     }
 
-    pub fn new_custom(message_code: String, message: String, data: Option<T>) -> GeneralBody<T> {
+    pub fn new_custom(status: StatusCode, message: String, data: Option<T>) -> GeneralBody<T> {
         GeneralBody {
             data,
-            message_code,
+            status: status.as_u16(),
             message,
         }
     }
