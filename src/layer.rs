@@ -4,7 +4,7 @@ use axum::{
     extract::{Request, State},
     http::{header, StatusCode},
     middleware::Next,
-    response::{IntoResponse, Response},
+    response::{IntoResponse, Response}, Extension,
 };
 use axum_extra::extract::CookieJar;
 use sqlx::{Pool, Postgres};
@@ -15,7 +15,8 @@ use crate::model::{
     response::GeneralResponse,
 };
 
-const AUTH_USER_QUERY: &str = "SELECT * FROM users
+const AUTH_USER_QUERY: &str = "SELECT *
+FROM users
 WHERE id = $1
 AND username = $2
 AND role = $3
@@ -61,11 +62,12 @@ pub async fn authenticated_layer(
         Ok(result) => result,
         Err(_) => return GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response(),
     };
+    
     req.extensions_mut().insert(claims);
     next.run(req).await
 }
 
-pub async fn admin_layer(claims: Claims, req: Request, next: Next) -> Response {
+pub async fn admin_layer(Extension(claims): Extension<Claims>, req: Request, next: Next) -> Response {
     if claims.role == UserRole::Admin {
         next.run(req).await
     } else {
@@ -73,7 +75,7 @@ pub async fn admin_layer(claims: Claims, req: Request, next: Next) -> Response {
     }
 }
 
-pub async fn salon_user_layer(claims: Claims, req: Request, next: Next) -> Response {
+pub async fn salon_owner_layer(Extension(claims): Extension<Claims>, req: Request, next: Next) -> Response {
     if claims.role == UserRole::SalonOwner {
         next.run(req).await
     } else {

@@ -5,19 +5,21 @@ use axum::{
     routing::{delete, get, post, put},
     Router,
 };
+use salon::UpdateSalonInput;
 use sqlx::{Pool, Postgres};
+use utoipa::OpenApi;
 
-use crate::layer;
+use crate::{layer, model::api_doc::SecurityAddon};
 
 mod salon;
 
-pub fn salon_user_router(db: Arc<Pool<Postgres>>) -> Router {
-    let layer = middleware::from_fn(layer::salon_user_layer);
+pub fn salon_owner_router(db: Arc<Pool<Postgres>>) -> Router {
+    let layer = middleware::from_fn(layer::salon_owner_layer);
     Router::new()
         // Salon
-        // .route("/salon", get(salon::salon_user::list_salon_of_user))
+         .route("/salon", get(salon::get_salon))
         // .route("/salon", post(salon::salon_user::create_salon))
-        // .route("/salon/:salon_id", put(salon::salon_user::update_salon))
+         .route("/salon", put(salon::update_salon))
         // .route("/salon/:salon_id", delete(salon::salon_user::delete_salon))
         // .route(
         //     "/salon/:salon_id/media",
@@ -39,3 +41,21 @@ pub fn salon_user_router(db: Arc<Pool<Postgres>>) -> Router {
         .with_state(db)
         .layer(layer)
 }
+
+#[derive(OpenApi)]
+#[openapi(
+        paths(
+        salon::get_salon,
+        salon::update_salon,
+        ),
+        components(
+            schemas(
+            UpdateSalonInput
+        )
+        ),
+        modifiers(&SecurityAddon),
+        //tags(
+        //    (name = "Account", description = "")
+        //)
+    )]
+pub struct SalonOwnerApiDoc;
