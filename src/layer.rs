@@ -9,7 +9,11 @@ use axum::{
 use axum_extra::extract::CookieJar;
 use sqlx::{Pool, Postgres};
 
-use crate::model::{claim::Claims, database::{User, UserRole}, response::GeneralResponse};
+use crate::model::{
+    claim::Claims,
+    database::{User, UserRole},
+    response::GeneralResponse,
+};
 
 const AUTH_USER_QUERY: &str = "SELECT * FROM users
 WHERE id = $1
@@ -40,7 +44,7 @@ pub async fn authenticated_layer(
         });
     let token = match token {
         Some(token) => token,
-        None => return GeneralResponse::new_general("G003").into_response(),
+        None => return GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response(),
     };
     let claims = match Claims::from_token(&token) {
         Ok(claims) => claims,
@@ -52,9 +56,10 @@ pub async fn authenticated_layer(
         .bind(claims.username.as_str())
         .bind(claims.role)
         .fetch_one(db.as_ref())
-        .await {
+        .await
+    {
         Ok(result) => result,
-        Err(_) => return GeneralResponse::new_general("G0003").into_response()
+        Err(_) => return GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response(),
     };
     req.extensions_mut().insert(claims);
     next.run(req).await
@@ -64,7 +69,7 @@ pub async fn admin_layer(claims: Claims, req: Request, next: Next) -> Response {
     if claims.role == UserRole::Admin {
         next.run(req).await
     } else {
-        GeneralResponse::new_general("G0003").into_response()
+        GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response()
     }
 }
 
@@ -72,6 +77,6 @@ pub async fn salon_user_layer(claims: Claims, req: Request, next: Next) -> Respo
     if claims.role == UserRole::SalonOwner {
         next.run(req).await
     } else {
-        GeneralResponse::new_general("G0003").into_response()
+        GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response()
     }
 }
