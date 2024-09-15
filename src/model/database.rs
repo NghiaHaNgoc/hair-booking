@@ -43,7 +43,7 @@ pub struct SalonBranch {
     pub id: Option<i64>,
     address: Option<String>,
     salon_id: Option<i64>,
-    created_at: Option<DateTime<Utc>>
+    created_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -92,7 +92,7 @@ pub enum UserGender {
     deserialize = "SCREAMING_SNAKE_CASE"
 ))]
 #[schema(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(type_name = "user_role",rename_all = "SCREAMING_SNAKE_CASE")]
+#[sqlx(type_name = "user_role", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserRole {
     Admin,
     SalonOwner,
@@ -121,7 +121,7 @@ pub enum GeneralStatus {
 pub enum ReservationStatus {
     Waiting,
     Done,
-    Cancel
+    Cancel,
 }
 
 impl fmt::Display for UserGender {
@@ -173,4 +173,3 @@ pub struct UserOutput {
     pub date_of_birth: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
 }
-

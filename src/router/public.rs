@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use axum::{routing::{delete, get, post}, Router};
+use axum::{
+    routing::{delete, get, post},
+    Router,
+};
 use sqlx::{Pool, Postgres};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -20,8 +23,8 @@ pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
         .route("/account/sign-in", post(account::sign_in))
         .route("/account/sign-up", post(account::sign_up))
         .route("/account/sign-out", delete(account::sign_out))
-         .route("/public/salon", get(salon::list_salon))
-         .route("/public/salon/:salon_id", get(salon::salon_detail))
+        .route("/public/salon", get(salon::list_salon))
+        .route("/public/salon/:salon_id", get(salon::salon_detail))
         // .route(
         //     "/public/salon/:salon_id/salon-bed",
         //     get(salon_bed::public::list_salon_bed),

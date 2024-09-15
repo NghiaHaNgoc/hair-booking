@@ -7,7 +7,9 @@ use utoipa::{
 };
 use uuid::Uuid;
 
-use crate::router::{admin::AdminApiDoc, general::GeneralApiDoc, public::PublicApiDoc, salon_owner::SalonOwnerApiDoc};
+use crate::router::{
+    admin::AdminApiDoc, general::GeneralApiDoc, public::PublicApiDoc, salon_owner::SalonOwnerApiDoc,
+};
 
 pub struct SecurityAddon;
 

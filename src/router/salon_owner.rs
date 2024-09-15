@@ -19,11 +19,10 @@ pub fn salon_owner_router(db: Arc<Pool<Postgres>>) -> Router {
     let layer = middleware::from_fn(layer::salon_owner_layer);
     Router::new()
         // Salon
-         .route("/salon", get(salon::get_salon))
-         .route("/salon", put(salon::update_salon))
+        .route("/salon", get(salon::get_salon))
+        .route("/salon", put(salon::update_salon))
         .route("/salon/branch", post(salon_branch::add_branch))
         .route("/salon/branch/:id", delete(salon_branch::delete_branch))
-
         // .route("/salon/:salon_id", delete(salon::salon_user::delete_salon))
         // .route(
         //     "/salon/:salon_id/media",
