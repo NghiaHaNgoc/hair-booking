@@ -35,4 +35,3 @@ pub fn extract_page_and_limit(page: Option<i64>, limit: Option<i64>) -> (i64, i6
     let limit = limit.unwrap_or(9999);
     (page, limit)
 }
-

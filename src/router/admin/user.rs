@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use axum::extract::{Query, State};
+use axum::extract::{Path, Query, State};
 use serde_json::json;
 use sqlx::{FromRow, Pool, Postgres, Row};
 
 use crate::{
     model::{
-        database::{GeneralPagingQueryInput, UserOutput},
+        database::{GeneralPagingQueryInput, User, UserOutput, UserRole},
         error::AppError,
         response::GeneralResponse,
     },
@@ -64,4 +64,51 @@ pub async fn list_user(
         "total": total
     });
     GeneralResponse::ok_with_data(data)
+}
+
+// -------------------------------------------------------------------------
+
+const CUSTOMER_TO_SALON_OWNER_QUERY: &str = "
+with salon as (
+insert INTO salons DEFAULT VALUES returning id
+)
+UPDATE users SET
+salon_id = (SELECT id FROM salon),
+role = 'SALON_OWNER'
+WHERE users.id = $1
+RETURNING *
+";
+
+#[utoipa::path(
+    put,
+    tag = "User",
+    path = "/admin/customer-to-salon-owner/{id}",
+    responses(
+        (status = 200, description = "Change customer to salon_owner")
+    )
+)]
+pub async fn customer_to_salon_owner(
+    State(db): State<Arc<Pool<Postgres>>>,
+    Path(user_id): Path<i64>,
+) -> Result<GeneralResponse, AppError> {
+    let validate_user: User = sqlx::query_as(
+        "
+SELECT * FROM users where id = $1
+",
+    )
+    .bind(user_id)
+    .fetch_one(db.as_ref())
+    .await?;
+    if let Some(role) = validate_user.role {
+        if role != UserRole::Customer {
+            return GeneralResponse::new_error("User role must be customer!".to_string());
+        }
+    }
+
+    let user: UserOutput = sqlx::query_as(CUSTOMER_TO_SALON_OWNER_QUERY)
+        .bind(user_id)
+        .fetch_one(db.as_ref())
+        .await?;
+
+    GeneralResponse::ok_with_data(user)
 }

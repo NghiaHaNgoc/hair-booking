@@ -1,7 +1,5 @@
 use super::response::GeneralResponse;
-use axum::
-    response::{IntoResponse, Response}
-;
+use axum::response::{IntoResponse, Response};
 
 #[derive(Debug)]
 pub struct AppError(anyhow::Error);

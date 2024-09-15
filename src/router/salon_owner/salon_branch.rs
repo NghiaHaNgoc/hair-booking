@@ -1,6 +1,10 @@
 use std::sync::Arc;
 
-use axum::{extract::{Path, State}, http::StatusCode, Extension, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    Extension, Json,
+};
 use serde::Deserialize;
 use sqlx::{Pool, Postgres};
 use utoipa::ToSchema;
@@ -76,7 +80,7 @@ RETURNING *;
 pub async fn delete_branch(
     State(db): State<Arc<Pool<Postgres>>>,
     Extension(claims): Extension<Claims>,
-    Path(branch_id): Path<i64>
+    Path(branch_id): Path<i64>,
 ) -> Result<GeneralResponse, AppError> {
     let _branch: SalonBranch = sqlx::query_as(DELETE_BRANCH_QUERY)
         .bind(claims.id)
