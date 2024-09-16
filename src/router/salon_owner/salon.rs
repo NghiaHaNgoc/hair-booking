@@ -19,9 +19,9 @@ COALESCE(
   '[]'::json
 ) AS salon_branches,
 COALESCE(
-  json_agg(DISTINC tp.*) FILTER (WHERE tp.id IS NOT NULL),
+  json_agg(DISTINCT tp.*) FILTER (WHERE tp.id IS NOT NULL),
   '[]'::json
-) AS therpies
+) AS therapies
 FROM salons sl
 INNER JOIN users ur ON ur.salon_id = sl.id
 LEFT JOIN salon_branches br ON sl.id = br.salon_id
