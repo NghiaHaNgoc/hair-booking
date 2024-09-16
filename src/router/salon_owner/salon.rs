@@ -13,14 +13,19 @@ use crate::model::{
 };
 
 const SALON_DETAIL_QUERY: &str = "
-select sl.*,
+SELECT sl.*,
 COALESCE(
-  json_agg(br) FILTER (WHERE br.id IS NOT NULL),
+  json_agg(DISTINCT br.*) FILTER (WHERE br.id IS NOT NULL),
   '[]'::json
-) AS salon_branches
+) AS salon_branches,
+COALESCE(
+  json_agg(DISTINC tp.*) FILTER (WHERE tp.id IS NOT NULL),
+  '[]'::json
+) AS therpies
 FROM salons sl
 INNER JOIN users ur ON ur.salon_id = sl.id
 LEFT JOIN salon_branches br ON sl.id = br.salon_id
+LEFT JOIN therapies tp ON sl.id = tp.salon_id
 WHERE ur.id = $1
 GROUP BY sl.id
 ";

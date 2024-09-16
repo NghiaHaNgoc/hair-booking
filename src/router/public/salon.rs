@@ -67,12 +67,16 @@ pub async fn list_salon(
 const SALON_DETAIL_QUERY: &str = "
 select sl.*,
 COALESCE(
-  json_agg(br) FILTER (WHERE br.id IS NOT NULL),
+  json_agg(DISTINCT br.*) FILTER (WHERE br.id IS NOT NULL),
   '[]'::json
-) AS salon_branches
+) AS salon_branches,
+COALESCE(
+  json_agg(DISTINCT tp.*) FILTER (WHERE tp.id IS NOT NULL),
+  '[]'::json
+) AS therapies
 FROM salons sl
-LEFT JOIN salon_branches br
-ON sl.id = br.salon_id
+LEFT JOIN salon_branches br ON sl.id = br.salon_id
+LEFT JOIN therapies tp ON sl.id = tp.salon_id 
 WHERE sl.id = $1
 GROUP BY sl.id
 ";
