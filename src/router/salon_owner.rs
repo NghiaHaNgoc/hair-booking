@@ -6,6 +6,7 @@ use axum::{
     Router,
 };
 use salon::UpdateSalonInput;
+use salon_bed::AddSalonBedInput;
 use salon_branch::AddSalonBranchInput;
 use sqlx::{Pool, Postgres};
 use therapy::AddAndUpdateTherapyInput;
@@ -16,6 +17,7 @@ use crate::{layer, model::api_doc::SecurityAddon};
 mod salon;
 mod salon_branch;
 mod therapy;
+mod salon_bed;
 
 pub fn salon_owner_router(db: Arc<Pool<Postgres>>) -> Router {
     let layer = middleware::from_fn(layer::salon_owner_layer);
@@ -28,6 +30,8 @@ pub fn salon_owner_router(db: Arc<Pool<Postgres>>) -> Router {
         .route("/salon/therapy", post(therapy::add_therapy))
         .route("/salon/therapy/:therapy_id", put(therapy::update_therapy))
         .route("/salon/therapy/:therapy_id", delete(therapy::delete_therapy))
+        .route("/branch/:branch_id/salon-bed", post(salon_bed::add_bed))
+        .route("/branch/salon-bed/:bed_id", delete(salon_bed::delete_bed))
         // .route("/salon/:salon_id", delete(salon::salon_user::delete_salon))
         // .route(
         //     "/salon/:salon_id/media",
@@ -59,13 +63,16 @@ pub fn salon_owner_router(db: Arc<Pool<Postgres>>) -> Router {
         salon_branch::delete_branch,
         therapy::add_therapy,
         therapy::update_therapy,
-        therapy::delete_therapy
+        therapy::delete_therapy,
+        salon_bed::add_bed,
+        salon_bed::delete_bed
         ),
         components(
             schemas(
             UpdateSalonInput,
             AddSalonBranchInput,
-            AddAndUpdateTherapyInput
+            AddAndUpdateTherapyInput,
+            AddSalonBedInput
         )
         ),
         modifiers(&SecurityAddon),

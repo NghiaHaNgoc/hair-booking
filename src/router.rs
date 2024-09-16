@@ -16,7 +16,7 @@ const MB_TO_BYTE: usize = 1024 * 1024;
 
 pub fn all_router(db: Arc<Pool<Postgres>>) -> Router {
     let origins = [
-        //HeaderValue::from_static("http://localhost:8080"),
+        HeaderValue::from_static("http://localhost:3000"),
         HeaderValue::from_static("http://localhost:5173"),
     ];
     let cors = CorsLayer::very_permissive()

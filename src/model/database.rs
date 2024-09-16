@@ -60,12 +60,13 @@ pub struct Therapy {
 }
 
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, sqlx::Type, Default)]
+#[serde(rename_all(serialize = "camelCase"))]
+#[sqlx(default)]
 pub struct SalonBed {
-    pub id: Option<u64>,
-    pub salon_id: Option<u64>,
+    pub id: Option<i64>,
+    pub branch_id: Option<i64>,
     pub name: Option<String>,
-    pub status: Option<GeneralStatus>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
