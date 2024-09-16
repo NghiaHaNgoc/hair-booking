@@ -5,16 +5,27 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Postgres};
 use utoipa::ToSchema;
 
-use crate::model::{claim::Claims, database::Salon, error::AppError, response::GeneralResponse};
+use crate::model::{
+    claim::Claims,
+    database::{Salon, SalonDetailOutput},
+    error::AppError,
+    response::GeneralResponse,
+};
 
-const GET_SALON_QUERY: &str = "
-SELECT salons.* 
-FROM salons
-INNER JOIN users
-ON users.salon_id = salons.id
-WHERE users.id = $1
+const SALON_DETAIL_QUERY: &str = "
+select sl.*,
+COALESCE(
+  json_agg(br) FILTER (WHERE br.id IS NOT NULL),
+  '[]'::json
+) AS salon_branches
+FROM salons sl
+INNER JOIN users ur ON ur.salon_id = sl.id
+LEFT JOIN salon_branches br ON sl.id = br.salon_id
+WHERE ur.id = $1
+GROUP BY sl.id
 ";
 
+/// Get salon of this salon owner
 #[utoipa::path(
     get,
     tag = "Salon",
@@ -28,7 +39,7 @@ pub async fn get_salon(
     State(db): State<Arc<Pool<Postgres>>>,
     Extension(claims): Extension<Claims>,
 ) -> Result<GeneralResponse, AppError> {
-    let salon: Salon = sqlx::query_as(GET_SALON_QUERY)
+    let salon: SalonDetailOutput = sqlx::query_as(SALON_DETAIL_QUERY)
         .bind(claims.id)
         .fetch_one(db.as_ref())
         .await?;
@@ -72,17 +83,7 @@ WHERE users.id = $7 AND salons.id = users.salon_id
 RETURNING salons.*
 ";
 
-//const UPDATE_SALON_BRANCH_QUERY: &str = "
-//UPDATE salon_branches set
-//address = $1
-//WHERE salon_id = $2
-//";
-//
-//const CREATE_SALON_BRANCH_QUERY: &str = "
-//INSERT INTO salon_branches (salon_id, address) VALUES
-//($1, $2)
-//";
-
+/// Update salons information
 #[utoipa::path(
     put,
     tag = "Salon",

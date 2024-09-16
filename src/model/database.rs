@@ -173,3 +173,20 @@ pub struct UserOutput {
     pub date_of_birth: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, Default)]
+#[serde(rename_all(serialize = "camelCase"))]
+#[sqlx(default)]
+pub struct SalonDetailOutput {
+    pub id: Option<i64>,
+    pub logo: Option<String>,
+    pub cover_photo: Option<String>,
+    pub name: Option<String>,
+    pub phone: Option<String>,
+    pub email: Option<String>,
+    pub description: Option<String>,
+    pub status: Option<GeneralStatus>,
+    #[sqlx(json)]
+    pub salon_branches: Vec<SalonBranch>,
+    pub created_at: Option<DateTime<Utc>>,
+}

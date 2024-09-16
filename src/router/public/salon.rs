@@ -1,14 +1,12 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::{FromRow, Pool, Postgres, Row};
 
 use crate::{
     model::{
-        database::{GeneralPagingQueryInput, GeneralStatus, Salon, SalonBranch},
+        database::{GeneralPagingQueryInput, Salon, SalonDetailOutput},
         error::AppError,
         response::GeneralResponse,
     },
@@ -21,16 +19,12 @@ ORDER BY id
 OFFSET $1
 LIMIT $2";
 
+/// Get list of salon
 #[utoipa::path(
     get,
     tag = "Salon",
     path = "/public/salon",
-    params(
-        GeneralPagingQueryInput
-    ),
-    responses(
-        (status = 200, description = "Get list of salon")
-    )
+    params(GeneralPagingQueryInput)
 )]
 pub async fn list_salon(
     State(db): State<Arc<Pool<Postgres>>>,
@@ -70,44 +64,21 @@ pub async fn list_salon(
 
 // ------------------------------------------------------------
 
-#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, Default)]
-#[serde(rename_all(serialize = "camelCase"))]
-#[sqlx(default)]
-pub struct SalonDetailOutput {
-    pub id: Option<i64>,
-    pub logo: Option<String>,
-    pub cover_photo: Option<String>,
-    pub name: Option<String>,
-    pub phone: Option<String>,
-    pub email: Option<String>,
-    pub description: Option<String>,
-    pub status: Option<GeneralStatus>,
-    #[sqlx(json)]
-    pub salon_branches: Vec<SalonBranch>,
-    pub created_at: Option<DateTime<Utc>>,
-}
-
 const SALON_DETAIL_QUERY: &str = "
 select sl.*,
 COALESCE(
   json_agg(br) FILTER (WHERE br.id IS NOT NULL),
   '[]'::json
-) AS salon_branchs
+) AS salon_branches
 FROM salons sl
 LEFT JOIN salon_branches br
 ON sl.id = br.salon_id
 WHERE sl.id = $1
 GROUP BY sl.id
-ORDER BY sl.id ASC";
+";
 
-#[utoipa::path(
-    get,
-    tag = "Salon",
-    path = "/public/salon/{salonId}",
-    responses(
-        (status = 200, description = "Get salon detail")
-    )
-)]
+/// Get salon detail
+#[utoipa::path(get, tag = "Salon", path = "/public/salon/{salonId}")]
 pub async fn salon_detail(
     State(db): State<Arc<Pool<Postgres>>>,
     Path(salon_id): Path<i64>,
