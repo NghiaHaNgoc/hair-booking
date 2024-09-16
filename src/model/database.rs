@@ -41,10 +41,24 @@ pub struct Salon {
 #[sqlx(default)]
 pub struct SalonBranch {
     pub id: Option<i64>,
-    address: Option<String>,
-    salon_id: Option<i64>,
-    created_at: Option<DateTime<Utc>>,
+    pub address: Option<String>,
+    pub salon_id: Option<i64>,
+    pub created_at: Option<DateTime<Utc>>,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, sqlx::Type, Default)]
+#[serde(rename_all(serialize = "camelCase"))]
+#[sqlx(default)]
+pub struct Therapy {
+    pub id: Option<i64>,
+    pub salon_id: Option<i64>,
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub price: Option<i64>,
+    pub duration: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
+}
+
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SalonBed {
@@ -188,5 +202,7 @@ pub struct SalonDetailOutput {
     pub status: Option<GeneralStatus>,
     #[sqlx(json)]
     pub salon_branches: Vec<SalonBranch>,
+    #[sqlx(json)]
+    pub therapies: Vec<Therapy>,
     pub created_at: Option<DateTime<Utc>>,
 }
