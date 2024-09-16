@@ -21,7 +21,9 @@ OFFSET $1
 LIMIT $2
 ";
 
-#[utoipa::path(get,
+/// Get list of users
+#[utoipa::path(
+    get,
     tag = "User",
     path = "/admin/user",
     params(
@@ -79,13 +81,11 @@ WHERE users.id = $1
 RETURNING *
 ";
 
+/// Change role of an user from CUSTOMER to SALON_OWNER
 #[utoipa::path(
     put,
     tag = "User",
     path = "/admin/customer-to-salon-owner/{id}",
-    responses(
-        (status = 200, description = "Change customer to salon_owner")
-    )
 )]
 pub async fn customer_to_salon_owner(
     State(db): State<Arc<Pool<Postgres>>>,

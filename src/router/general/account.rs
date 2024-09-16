@@ -12,6 +12,7 @@ use utoipa::ToSchema;
 
 const GET_PROFILE_QUERY: &str = "SELECT * FROM users WHERE id = $1";
 
+/// Get profile
 #[utoipa::path(
     get,
     tag = "Account",
@@ -51,6 +52,7 @@ avatar = COALESCE($5, avatar)
 where id = $6
 ";
 
+/// Update profile
 #[utoipa::path(
     put,
     tag = "Account",

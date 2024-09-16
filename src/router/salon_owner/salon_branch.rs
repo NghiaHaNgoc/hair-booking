@@ -34,6 +34,7 @@ pub struct AddSalonBranchInput {
     address: String,
 }
 
+/// Add branch to salon of salon owner
 #[utoipa::path(
     post,
     tag = "Salon branch",
@@ -68,6 +69,7 @@ AND salon_branches.id = $2
 RETURNING *;
 ";
 
+/// Delete branch salon of salon owner
 #[utoipa::path(
     delete,
     tag = "Salon branch",
