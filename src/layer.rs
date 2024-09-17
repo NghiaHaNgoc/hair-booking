@@ -91,3 +91,15 @@ pub async fn salon_owner_layer(
         GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response()
     }
 }
+
+pub async fn customer_layer(
+    Extension(claims): Extension<Claims>,
+    req: Request,
+    next: Next,
+) -> Response {
+    if claims.role == UserRole::Customer {
+        next.run(req).await
+    } else {
+        GeneralResponse::new_general(StatusCode::UNAUTHORIZED).into_response()
+    }
+}

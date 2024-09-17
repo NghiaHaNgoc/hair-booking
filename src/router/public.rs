@@ -28,6 +28,7 @@ pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
         .route("/public/salon/:salon_id", get(salon::salon_detail))
         // 
         .route("/public/branch/:brand_id/salon-bed", get(salon_bed::list_bed))
+        .route("/public/branch/:brand_id/available-bed", get(salon_bed::available_bed))
         // .route(
         //     "/public/salon/:salon_id/salon-bed",
         //     get(salon_bed::public::list_salon_bed),
@@ -43,7 +44,8 @@ pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
         account::sign_out,
         salon::list_salon,
         salon::salon_detail,
-        salon_bed::list_bed
+        salon_bed::list_bed,
+        salon_bed::available_bed
         ),
         components(
             schemas(

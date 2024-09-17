@@ -14,8 +14,7 @@ impl AppError {
 // Tell axum how to convert `AppError` into a response.
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        let message = format!("Error: {}", self.0);
-        let res = GeneralResponse::new_error(message);
+        let res = GeneralResponse::new_error(self.0.to_string());
         res.into_response()
     }
 }

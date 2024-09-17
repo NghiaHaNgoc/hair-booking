@@ -70,17 +70,20 @@ pub struct SalonBed {
     pub created_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, sqlx::Type, Default)]
+#[serde(rename_all(serialize = "camelCase"))]
+#[sqlx(default)]
 pub struct Reservation {
-    pub id: Option<u64>,
-    pub user_id: Option<u64>,
-    pub salon_bed_id: Option<u64>,
+    pub id: Option<i64>,
+    pub user_id: Option<i64>,
+    pub therapy_id: Option<i64>,
+    pub salon_bed_id: Option<i64>,
     pub time_from: Option<DateTime<Utc>>,
     pub time_to: Option<DateTime<Utc>>,
     pub comment: Option<String>,
     pub status: Option<ReservationStatus>,
-    pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
@@ -132,7 +135,7 @@ pub enum GeneralStatus {
     deserialize = "SCREAMING_SNAKE_CASE"
 ))]
 #[schema(rename_all = "SCREAMING_SNAKE_CASE")]
-#[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
+#[sqlx(type_name = "reservation_status", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ReservationStatus {
     Waiting,
     Done,
@@ -206,4 +209,28 @@ pub struct SalonDetailOutput {
     #[sqlx(json)]
     pub therapies: Vec<Therapy>,
     pub created_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, Default)]
+#[serde(rename_all(serialize = "camelCase"))]
+#[sqlx(default)]
+pub struct ReservationOutput {
+    pub id: Option<i64>,
+    pub user_id: Option<i64>,
+    pub therapy_id: Option<i64>,
+    pub salon_bed_id: Option<i64>,
+    pub time_from: Option<DateTime<Utc>>,
+    pub time_to: Option<DateTime<Utc>>,
+    pub comment: Option<String>,
+    pub status: Option<ReservationStatus>,
+    pub updated_at: Option<DateTime<Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
+    #[sqlx(json)]
+    pub therapy: Option<Therapy>,
+    #[sqlx(json)]
+    pub salon_bed: Option<SalonBed>,
+    #[sqlx(json)]
+    pub salon: Option<Salon>,
+    #[sqlx(json)]
+    pub salon_branch: Option<SalonBranch>
 }
