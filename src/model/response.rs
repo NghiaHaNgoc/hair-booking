@@ -39,6 +39,7 @@ impl GeneralResponse {
     }
 
     pub fn new_error(message: String) -> Result<Self, AppError> {
+        let message = format!("Error: {}", message);
         let general_body = GeneralBody::<bool>::new_custom(StatusCode::BAD_REQUEST, message, None);
         let body = serde_json::to_string(&general_body)?;
         let res = GeneralResponse {

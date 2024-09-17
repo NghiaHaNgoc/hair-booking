@@ -94,9 +94,6 @@ RETURNING salons.*
     tag = "Salon",
     path = "/salon-owner/salon",
     security(("Authorization" = [])),
-    responses(
-        (status = 200, description = "Update salon by salon owner")
-    )
 )]
 pub async fn update_salon(
     State(db): State<Arc<Pool<Postgres>>>,

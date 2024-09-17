@@ -8,7 +8,8 @@ use utoipa::{
 use uuid::Uuid;
 
 use crate::router::{
-    admin::AdminApiDoc, general::GeneralApiDoc, public::PublicApiDoc, salon_owner::SalonOwnerApiDoc,
+    admin::AdminApiDoc, customer::CustomerApiDoc, general::GeneralApiDoc, public::PublicApiDoc,
+    salon_owner::SalonOwnerApiDoc,
 };
 
 pub struct SecurityAddon;
@@ -29,6 +30,7 @@ pub fn get_api_doc() -> openapi::OpenApi {
     api_doc.merge(GeneralApiDoc::openapi());
     api_doc.merge(SalonOwnerApiDoc::openapi());
     api_doc.merge(AdminApiDoc::openapi());
+    api_doc.merge(CustomerApiDoc::openapi());
 
     for (_, j) in api_doc.paths.paths.iter_mut() {
         for (_, y) in j.operations.iter_mut() {

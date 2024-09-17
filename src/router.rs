@@ -7,7 +7,7 @@ use tower_http::cors::CorsLayer;
 use crate::layer;
 
 pub mod admin;
-//mod customer;
+pub mod customer;
 pub mod general;
 pub mod public;
 pub mod salon_owner;
@@ -37,11 +37,13 @@ fn authorization_router(db: Arc<Pool<Postgres>>) -> Router {
         middleware::from_fn_with_state(db.clone(), layer::authenticated_layer);
     let general_router = general::general_router(db.clone());
     let admin_router = admin::admin_router(db.clone());
-    let salon_user_router = salon_owner::salon_owner_router(db.clone());
+    let salon_owner_router = salon_owner::salon_owner_router(db.clone());
+    let customer_router = customer::customer_router(db.clone());
 
     Router::new()
         .merge(general_router)
         .nest("/admin", admin_router)
-        .nest("/salon-owner", salon_user_router)
+        .nest("/salon-owner", salon_owner_router)
+        .nest("/customer", customer_router)
         .layer(authenticated_layer)
 }
