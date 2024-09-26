@@ -28,10 +28,8 @@ LIMIT $2";
 )]
 pub async fn list_salon(
     State(db): State<Arc<Pool<Postgres>>>,
-    Query(GeneralPagingQueryInput { page, limit }): Query<GeneralPagingQueryInput>,
+    Query(GeneralPagingQueryInput { offset, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
-    let (page, limit) = utils::extract_page_and_limit(page, limit);
-    let offset = (page - 1) * limit;
 
     let salons = sqlx::query(LIST_SALON_QUERY)
         .bind(offset)
@@ -52,11 +50,9 @@ pub async fn list_salon(
         .collect();
 
     let total = total.unwrap_or(0);
-    let pages = utils::total_pages(total, limit);
 
     let data = json!({
         "salons": salons,
-        "pages": pages,
         "total": total
     });
     GeneralResponse::ok_with_data(data)

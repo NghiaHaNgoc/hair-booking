@@ -18,6 +18,7 @@ pub fn all_router(db: Arc<Pool<Postgres>>) -> Router {
     let origins = [
         HeaderValue::from_static("http://localhost:3000"),
         HeaderValue::from_static("http://localhost:5173"),
+        HeaderValue::from_static("https://goha.netlify.app"),
     ];
     let cors = CorsLayer::very_permissive()
         .allow_origin(origins)
