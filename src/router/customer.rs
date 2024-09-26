@@ -18,6 +18,7 @@ pub fn customer_router(db: Arc<Pool<Postgres>>) -> Router {
     Router::new()
         // Reservation
         .route("/reservation", post(reservation::add_reservation))
+        .route("/reservation", get(reservation::list_reservation))
         .with_state(db)
         .layer(layer)
 }
@@ -25,7 +26,8 @@ pub fn customer_router(db: Arc<Pool<Postgres>>) -> Router {
 #[derive(OpenApi)]
 #[openapi(
         paths(
-        reservation::add_reservation
+        reservation::add_reservation,
+        reservation::list_reservation
         ),
         components(
             schemas(
