@@ -128,10 +128,8 @@ LIMIT $3
 pub async fn list_reservation(
     State(db): State<Arc<Pool<Postgres>>>,
     Extension(claims): Extension<Claims>,
-    Query(GeneralPagingQueryInput { page, limit }): Query<GeneralPagingQueryInput>,
+    Query(GeneralPagingQueryInput { offset, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
-    let (page, limit) = utils::extract_page_and_limit(page, limit);
-    let offset = (page - 1) * limit;
 
     let salons = sqlx::query(LIST_RESERVATION_QUERY)
         .bind(claims.id)
@@ -153,11 +151,9 @@ pub async fn list_reservation(
         .collect();
 
     let total = total.unwrap_or(0);
-    let pages = utils::total_pages(total, limit);
 
     let data = json!({
         "reservations": reservations,
-        "pages": pages,
         "total": total
     });
     GeneralResponse::ok_with_data(data)

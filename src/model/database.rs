@@ -88,7 +88,7 @@ pub struct Reservation {
 
 #[derive(IntoParams, Serialize, Deserialize, Debug, Clone)]
 pub struct GeneralPagingQueryInput {
-    pub page: Option<i64>,
+    pub offset: Option<i64>,
     pub limit: Option<i64>,
 }
 
