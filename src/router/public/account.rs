@@ -107,7 +107,8 @@ pub async fn sign_in(
         .await
     {
         Ok(user) => user,
-        Err(_) => return GeneralResponse::new_general(StatusCode::UNAUTHORIZED),
+        Err(err) => 
+        return GeneralResponse::new_error(err.to_string()),
     };
     let is_valid_password = bcrypt::verify(
         signin_input.password,

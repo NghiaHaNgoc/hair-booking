@@ -225,12 +225,16 @@ pub struct ReservationOutput {
     pub status: Option<ReservationStatus>,
     pub updated_at: Option<DateTime<Utc>>,
     pub created_at: Option<DateTime<Utc>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
     pub therapy: Option<Therapy>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
     pub salon_bed: Option<SalonBed>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
     pub salon: Option<Salon>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
     pub salon_branch: Option<SalonBranch>
 }
