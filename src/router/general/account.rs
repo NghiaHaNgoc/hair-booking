@@ -50,6 +50,7 @@ email = COALESCE($3, email),
 gender = COALESCE($4, gender),
 avatar = COALESCE($5, avatar)
 where id = $6
+RETURNING *
 ";
 
 /// Update profile
