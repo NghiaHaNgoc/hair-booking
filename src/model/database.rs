@@ -16,7 +16,7 @@ pub struct User {
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
-    pub date_of_birth: Option<String>,
+    pub date_of_birth: Option<DateTime<Utc>>,
     pub salon_id: Option<i64>,
     pub created_at: Option<DateTime<Utc>>,
 }
@@ -55,18 +55,7 @@ pub struct Therapy {
     pub name: Option<String>,
     pub description: Option<String>,
     pub price: Option<i64>,
-    pub duration: Option<String>,
-    pub created_at: Option<DateTime<Utc>>,
-}
-
-
-#[derive(Serialize, Deserialize, Debug, Clone, sqlx::FromRow, sqlx::Type, Default)]
-#[serde(rename_all(serialize = "camelCase"))]
-#[sqlx(default)]
-pub struct SalonBed {
-    pub id: Option<i64>,
-    pub branch_id: Option<i64>,
-    pub name: Option<String>,
+    pub duration: Option<DateTime<Utc>>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -77,7 +66,7 @@ pub struct Reservation {
     pub id: Option<i64>,
     pub user_id: Option<i64>,
     pub therapy_id: Option<i64>,
-    pub salon_bed_id: Option<i64>,
+    pub salon_branch_id: Option<i64>,
     pub time_from: Option<DateTime<Utc>>,
     pub time_to: Option<DateTime<Utc>>,
     pub comment: Option<String>,
@@ -188,7 +177,7 @@ pub struct UserOutput {
     pub gender: Option<UserGender>,
     pub role: Option<UserRole>,
     pub avatar: Option<String>,
-    pub date_of_birth: Option<String>,
+    pub date_of_birth: Option<DateTime<Utc>>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -230,11 +219,8 @@ pub struct ReservationOutput {
     pub therapy: Option<Therapy>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
-    pub salon_bed: Option<SalonBed>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[sqlx(json)]
     pub salon: Option<Salon>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[sqlx(json)]
-    pub salon_branch: Option<SalonBranch>
+    pub salon_branch: Option<SalonBranch>,
 }

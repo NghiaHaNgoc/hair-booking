@@ -30,7 +30,6 @@ pub async fn list_salon(
     State(db): State<Arc<Pool<Postgres>>>,
     Query(GeneralPagingQueryInput { offset, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
-
     let salons = sqlx::query(LIST_SALON_QUERY)
         .bind(offset)
         .bind(limit)

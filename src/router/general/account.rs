@@ -5,6 +5,7 @@ use crate::model::{
     response::GeneralResponse,
 };
 use axum::{extract::State, Extension, Json};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Postgres};
 use std::sync::Arc;
@@ -37,7 +38,7 @@ pub async fn get_profile(
 #[schema(rename_all = "camelCase")]
 pub struct UpdateUserProfileInput {
     pub full_name: Option<String>,
-    pub date_of_birth: Option<String>,
+    pub date_of_birth: Option<DateTime<Utc>>,
     pub email: Option<String>,
     pub gender: Option<UserGender>,
     pub avatar: Option<String>,

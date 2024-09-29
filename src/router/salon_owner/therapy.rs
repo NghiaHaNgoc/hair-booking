@@ -4,6 +4,7 @@ use axum::{
     extract::{Path, State},
     Extension, Json,
 };
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use sqlx::{Pool, Postgres};
 use utoipa::ToSchema;
@@ -17,7 +18,7 @@ pub struct AddAndUpdateTherapyInput {
     pub name: Option<String>,
     pub description: Option<String>,
     pub price: Option<i64>,
-    pub duration: Option<String>,
+    pub duration: Option<DateTime<Utc>>,
 }
 
 const ADD_THERAPY_QUERY: &str = "
