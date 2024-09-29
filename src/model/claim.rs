@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 pub struct Claims {
     pub id: i64,
     pub username: String,
-    pub role: UserRole,
+    pub role: Option<UserRole>,
     pub exp: u64,
 }
 
@@ -84,10 +84,6 @@ impl Claims {
             Some(username) => username.clone(),
             None => return Err(AppError::new("username not found in db!".to_string())),
         };
-        let role = match user.role.as_ref() {
-            Some(role) => role.clone(),
-            None => return Err(AppError::new("role not found in db!".to_string())),
-        };
 
         // Create time expired
         let now = SystemTime::now();
@@ -101,7 +97,7 @@ impl Claims {
         let claims = Claims {
             id,
             username,
-            role,
+            role: None,
             exp,
         };
         let token = jsonwebtoken::encode(

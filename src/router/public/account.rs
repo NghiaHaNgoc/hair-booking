@@ -40,7 +40,7 @@ pub async fn sign_up(
     Json(mut signup_input): Json<SignupInput>,
 ) -> Result<GeneralResponse, AppError> {
     let validate_user: Vec<User> =
-        sqlx::query_as("SELECT *, date_of_birth::text FROM users where username = $1")
+        sqlx::query_as("SELECT * FROM users where username = $1")
             .bind(signup_input.username.as_str())
             .fetch_all(db.as_ref())
             .await?;
@@ -92,7 +92,7 @@ pub struct SigninInput {
     password: String,
 }
 
-const SIGNIN_QUERY: &str = "SELECT users.*, date_of_birth::text
+const SIGNIN_QUERY: &str = "SELECT users.*
 FROM users
 WHERE username = $1";
 
@@ -107,8 +107,7 @@ pub async fn sign_in(
         .await
     {
         Ok(user) => user,
-        Err(err) => 
-        return GeneralResponse::new_error(err.to_string()),
+        Err(err) => return GeneralResponse::new_error(err.to_string()),
     };
     let is_valid_password = bcrypt::verify(
         signin_input.password,

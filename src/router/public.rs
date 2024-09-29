@@ -4,6 +4,7 @@ use axum::{
     routing::{delete, get, post},
     Router,
 };
+use chrono::{DateTime, Utc};
 use sqlx::{Pool, Postgres};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -15,7 +16,6 @@ use crate::model::{
 
 mod account;
 mod salon;
-mod salon_bed;
 
 pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
     let api_doc = api_doc::get_api_doc();
@@ -26,13 +26,7 @@ pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
         .route("/account/sign-out", delete(account::sign_out))
         .route("/public/salon", get(salon::list_salon))
         .route("/public/salon/:salon_id", get(salon::salon_detail))
-        // 
-        .route("/public/branch/:brand_id/salon-bed", get(salon_bed::list_bed))
-        .route("/public/branch/:brand_id/available-bed", get(salon_bed::available_bed))
-        // .route(
-        //     "/public/salon/:salon_id/salon-bed",
-        //     get(salon_bed::public::list_salon_bed),
-        // )
+        //
         .with_state(db)
 }
 
@@ -44,8 +38,6 @@ pub fn public_router(db: Arc<Pool<Postgres>>) -> Router {
         account::sign_out,
         salon::list_salon,
         salon::salon_detail,
-        salon_bed::list_bed,
-        salon_bed::available_bed
         ),
         components(
             schemas(

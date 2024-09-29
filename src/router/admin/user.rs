@@ -37,7 +37,6 @@ pub async fn list_user(
     State(db): State<Arc<Pool<Postgres>>>,
     Query(GeneralPagingQueryInput { offset, limit }): Query<GeneralPagingQueryInput>,
 ) -> Result<GeneralResponse, AppError> {
-
     let users = sqlx::query(LIST_USER_QUERY)
         .bind(offset)
         .bind(limit)
@@ -76,11 +75,7 @@ RETURNING *
 ";
 
 /// Change role of an user from CUSTOMER to SALON_OWNER
-#[utoipa::path(
-    put,
-    tag = "User",
-    path = "/admin/customer-to-salon-owner/{id}",
-)]
+#[utoipa::path(put, tag = "User", path = "/admin/customer-to-salon-owner/{id}")]
 pub async fn customer_to_salon_owner(
     State(db): State<Arc<Pool<Postgres>>>,
     Path(user_id): Path<i64>,
